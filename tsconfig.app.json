@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "types": ["vite/client"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@Mu/*": ["src/*"],
+      "@MuAssets/*": ["src/assets/*"],
+      "@MuComponents/*": ["src/components/*"],
+      "@MuConfig/*": ["src/config/*"],
+      "@MuGraphql/*": ["src/graphql/*"],
+      "@MuHooks/*": ["src/hooks/*"],
+      "@MuLibs/*": ["src/libs/*"],
+      "@MuPages/*": ["src/pages/*"],
+      "@MuRouters/*": ["src/routers/*"],
+      "@MuServices/*": ["src/services/*"],
+      "@MuTypes/*": ["src/types/*"],
+      "@MuUtils/*": ["src/utils/*"],
+    },
+  },
+  "include": ["src"]
+}

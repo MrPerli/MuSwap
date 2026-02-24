@@ -1,0 +1,64 @@
+.BackButton {
+    background-color: rgba(240, 248, 255, 0);
+    border: none;
+    color: white;
+    outline: none;
+    font-size: 20px;
+}
+.BackButton:hover {
+    background-color: rgba(240, 248, 255, 0) !important;
+    border: none !important;
+    color: white !important;
+    outline: none !important;
+    font-size: 20px !important;
+}
+.BackButton:focus {
+    background-color: rgba(240, 248, 255, 0) !important;
+    border: none !important;
+    color: white !important;
+    outline: none !important;
+    font-size: 20px !important;
+}
+
+.WalletButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    height: 80px;
+    width: 300px;
+    border-radius: 0px;
+    background-color: rgba(240, 248, 255, 0);
+    border: none;
+    color: white;
+    outline: none;
+    font-size: 20px;
+}
+.WalletButton:hover {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    height: 80px;
+    width: 300px;
+    border-radius: 0px;
+    background-color: rgb(30, 30, 30) !important;
+    border: none !important;
+    color: white !important;
+    outline: none !important;
+    font-size: 20px !important;
+}
+.WalletButton:active {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    height: 80px;
+    width: 300px;
+    border-radius: 0px;
+    background-color: rgb(30, 30, 30) !important;
+    border: none !important;
+    color: white !important;
+    outline: none !important;
+    font-size: 20px !important;
+}
+.WalletButton:focus {
+    outline: none !important;
+}

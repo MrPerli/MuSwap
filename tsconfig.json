@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node" // 确保使用 node 模块解析
+  },
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+}

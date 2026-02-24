@@ -1,0 +1,59 @@
+.AccountButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(221, 160, 19, 0);
+    font-size: 20px;
+    border: none;
+    color: rgb(209, 209, 209);
+}
+.AccountButton:hover {
+    background-color: rgba(221, 160, 19, 0) !important;
+    font-size: 20px !important;
+    border: none !important;
+    color: rgb(255, 255, 255) !important;
+    outline: none;
+}
+.AccountButton:focus {
+    background-color: rgba(221, 160, 19, 0) !important;
+    font-size: 20px !important;
+    border: none !important;
+    color: rgb(255, 255, 255) !important;
+    outline: none;
+}
+.AccountButton:active {
+    background-color: rgba(221, 160, 19, 0) !important;
+    font-size: 20px !important;
+    border: none !important;
+    color: rgb(255, 255, 255) !important;
+    outline: none;
+}
+
+.ConnectButton {
+    background-color: rgb(226, 68, 202);
+    font-size: 14px;
+    border: none;
+    color: rgb(238, 238, 238);
+    border-radius: 14px;
+    height: 35px;
+
+}
+.ConnectButton:hover {
+    background-color: rgb(196, 8, 167) !important;
+    font-size: 14px !important;
+    border: none !important;
+    color: rgb(238, 238, 238) !important;
+    outline: none;
+    border-radius: 14px;
+    height: 35px;
+}
+.ConnectButton:focus {
+    background-color: rgb(196, 8, 167) !important;
+    font-size: 14px !important;
+    border: none !important;
+    color: rgb(238, 238, 238) !important;
+    outline: none;
+    border-radius: 14px;
+    height: 35px;
+}

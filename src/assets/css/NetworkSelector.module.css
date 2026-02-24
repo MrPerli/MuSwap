@@ -1,0 +1,119 @@
+.SelectedButton{
+    --Display: flex;
+    --FlexDirection: row;
+    --JustifyContent: space-between;
+    --AlignItems: center;
+    --Gap: 8px;
+    --Width: 140px;
+    --Background: rgba(0, 0, 0, 0);
+    --Color: white;
+    --Outline: none;
+    --Border: 1px solid #6b6b6b;
+    --Padding: 5px;
+    display: var(--Display);
+    flex-direction: var(--FlexDirection);
+    justify-content: var(--JustifyContent);
+    align-items: var(--AlignItems);
+    gap: var(--Gap);
+    width: var(--Width);
+    background: var(--Background);
+    color: var(--Color);
+    outline: var(--Outline);
+    border: var(--Border);
+    padding: var(--Padding);
+}
+.SelectedButton:hover{
+    display: var(--Display);
+    flex-direction: var(--FlexDirection);
+    align-items: var(--AlignItems);
+    gap: var(--Gap);
+    width: var(--Width);
+    background: #3f3f3f !important;
+    color: var(--Color);
+    outline: var(--Outline);
+    border: var(--Border);
+    padding: var(--Padding);
+}
+.SelectedButton:focus{
+    display: var(--Display);
+    flex-direction: var(--FlexDirection);
+    align-items: var(--AlignItems);
+    gap: var(--Gap);
+    width: var(--Width);
+    background: var(--Background);
+    color: var(--Color);
+    outline: var(--Outline);
+    border: var(--Border);
+    padding: var(--Padding);
+}
+.SelectedButton:active{
+    display: var(--Display);
+    flex-direction: var(--FlexDirection);
+    align-items: var(--AlignItems);
+    gap: var(--Gap);
+    width: var(--Width);
+    background: var(--Background);
+    color: var(--Color);
+    outline: var(--Outline);
+    border: var(--Border);
+    padding: var(--Padding);
+}
+
+.ChooseButton{
+    --Display: flex;
+    --FlexDirection: row;
+    --AlignItems: center;
+    --Gap: 8px;
+    --Width: 200px;
+    --Background: rgba(0, 0, 0, 0);
+    --Color: white;
+    --Outline: none;
+    --Border: none;
+    --Padding: 5px;
+    display: var(--Display);
+    flex-direction: var(--FlexDirection);
+    align-items: var(--AlignItems);
+    gap: var(--Gap);
+    width: var(--Width);
+    background: var(--Background);
+    color: var(--Color);
+    outline: var(--Outline);
+    border: var(--Border);
+    padding: var(--Padding);
+}
+.ChooseButton:hover{
+    display: var(--Display);
+    flex-direction: var(--FlexDirection);
+    align-items: var(--AlignItems);
+    gap: var(--Gap);
+    width: var(--Width);
+    background: #3f3f3f;
+    color: var(--Color);
+    outline: var(--Outline);
+    border: var(--Border);
+    padding: var(--Padding);
+}
+.ChooseButton:focus{
+    display: var(--Display);
+    flex-direction: var(--FlexDirection);
+    align-items: var(--AlignItems);
+    gap: var(--Gap);
+    width: var(--Width);
+    background: #3f3f3f;
+    color: var(--Color);
+    outline: var(--Outline);
+    border: var(--Border);
+    padding: var(--Padding);
+}
+.ChooseButton:active{
+    display: var(--Display);
+    flex-direction: var(--FlexDirection);
+    align-items: var(--AlignItems);
+    gap: var(--Gap);
+    width: var(--Width);
+    background: #3f3f3f;
+    color: var(--Color);
+    outline: var(--Outline);
+    border: var(--Border);
+    padding: var(--Padding);
+}

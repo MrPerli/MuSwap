@@ -1,0 +1,138 @@
+.AccountButton {
+    background-color: rgba(221, 160, 19, 0);
+    font-size: 16px;
+    width: 130px;
+    border: none;
+    color: rgb(255, 255, 255);
+}
+.AccountButton:hover {
+    background-color: rgba(221, 160, 19, 0) !important;
+    font-size: 16px !important;
+    width: 130px;
+    border: none !important;
+    color: rgb(202, 202, 202) !important;
+    outline: none;
+}
+.AccountButton:focus {
+    background-color: rgba(221, 160, 19, 0) !important;
+    font-size: 16px !important;
+    width: 130px;
+    border: none !important;
+    color: rgb(185, 185, 185) !important;
+    outline: none;
+}
+
+.SettingButton {
+    width: 32px;
+    height: 32px;
+    border-radius: 20px;
+    background-color: rgba(42, 125, 197, 0);
+    border: none;
+    font-size: 18px;
+    color: rgb(161, 161, 161);
+}
+.SettingButton:hover {
+    width: 32px;
+    height: 32px;
+    border-radius: 20px !important;
+    background-color: rgb(44, 44, 44) !important;
+    border: none !important;
+    font-size: 18px !important;
+    color: rgb(226, 226, 226) !important;
+    outline: none;
+}
+.SettingButton:focus {
+    width: 32px;
+    height: 32px;
+    border-radius: 20px !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+    border: none !important;
+    font-size: 18px !important;
+    color: rgb(161, 161, 161) !important;
+    outline: none;
+}
+.SettingButton:active {
+    width: 32px;
+    height: 32px;
+    border-radius: 20px !important;
+    background-color: rgba(44, 44, 44, 0) !important;
+    border: none !important;
+    font-size: 18px !important;
+    color: rgb(226, 226, 226) !important;
+    outline: none;
+}
+
+.PowerButton {
+    width: 32px;
+    height: 32px;
+    border-radius: 20px;
+    background-color: rgba(42, 125, 197, 0);
+    border: none;
+    font-size: 18px;
+    color: rgb(161, 161, 161);
+}
+.PowerButton:hover {
+    width: 32px;
+    height: 32px;
+    border-radius: 20px !important;
+    background-color: rgb(44, 44, 44) !important;
+    border: none !important;
+    font-size: 18px !important;
+    color: rgb(161, 161, 161) !important;
+    outline: none;
+}
+
+.PowerButton:focus {
+    width: 32px;
+    height: 32px;
+    border-radius: 20px !important;
+    background-color: rgb(44, 44, 44) !important;
+    border: none !important;
+    font-size: 18px !important;
+    color: rgb(161, 161, 161) !important;
+    outline: none;
+}
+
+.FunctionCard {
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+    gap:0px;
+    border:1px solid #787474ff;
+    width:300px;
+    height:100px;
+    background-color:#1a1919ff;
+    border-radius:20px;
+    padding:20px;
+    outline: none;
+}
+.FunctionCard:hover {
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+    gap:0px;
+    border:1px solid #787474ff !important;
+    width:300px;
+    height:100px;
+    background-color:rgb(57, 57, 57) !important;
+    border-radius:20px;
+    padding:20px;
+    outline: none;
+}
+.FunctionCard:active {
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+    gap:0px;
+    border:1px solid #787474ff !important;
+    width:300px;
+    height:100px;
+    background-color:rgba(57, 57, 57, 0) !important;
+    border-radius:20px;
+    padding:20px;
+    outline: none;
+    scale: 0.98;
+}
+.FunctionCard:focus {
+    outline: none;
+}

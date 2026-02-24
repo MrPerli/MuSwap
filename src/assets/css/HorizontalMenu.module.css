@@ -1,0 +1,115 @@
+.MainMenuButton{
+    --FontSize:20px;
+    --FontWeight: 350;
+    --Background:none;
+    --Border:none;
+    --Outline:none;
+    --Padding:0px;
+    color: rgb(192, 192, 192) !important;
+    font-size: var(--FontSize);
+    font-weight: var(--FontWeight);
+    background: var(--Background);
+    border: var(--Border);
+    outline:var(--Outline);
+    padding: var(--Padding);
+}
+.MainMenuButton:hover{
+    color: rgb(192, 192, 192) !important;
+    font-size: var(--FontSize) !important;
+    font-weight: var(--FontWeight);
+    background: var(--Background) !important;
+    border: var(--Border) !important;
+    outline:var(--Outline) !important;
+    padding: var(--Padding);
+}
+.MainMenuButton:active{
+    color: rgb(192, 192, 192) !important;
+    font-size: var(--FontSize) !important;
+    font-weight: var(--FontWeight);
+    background: var(--Background) !important;
+    border: var(--Border) !important;
+    outline:var(--Outline) !important;
+    padding: var(--Padding);
+}
+.MainMenuButton:focus{
+    color: rgb(192, 192, 192) !important;
+    font-size: var(--FontSize) !important;
+    font-weight: var(--FontWeight);
+    background: var(--Background) !important;
+    border: var(--Border) !important;
+    outline:var(--Outline) !important;
+    padding: var(--Padding);
+}
+
+.SubMenuButton{
+    --Display:flex;
+    --FlexDirection:row;
+    --JustifyContent:flex;
+    --FontSize:18px;
+    --FontWeight: 350;
+    --Border:none;
+    --Outline:none;
+    --Color:rgb(192, 192, 192);
+    --Height:50px;
+    --Width:160px;
+    --BorderRadius: 14px; 
+    --Padding:10px;
+    background: #393939;
+    display: var(--Display);
+    flex-direction: var(--FlexDirection);
+    justify-content: var(--JustifyContent);
+    font-size: var(--FontSize);
+    font-weight: var(--FontWeight);
+    border: var(--Border);
+    outline:var(--Outline);
+    color: var(--Color);
+    height: var(--Height);
+    width: var(--Width);
+    border-radius: var(--BorderRadius);
+    padding: var(--Padding);
+}
+.SubMenuButton:hover{
+    background: #555555 !important;
+    display: var(--Display) !important;
+    flex-direction: var(--FlexDirection) !important;
+    justify-content: var(--JustifyContent) !important;
+    font-size: var(--FontSize) !important;
+    font-weight: var(--FontWeight);
+    border: var(--Border) !important;
+    outline:var(--Outline) !important;
+    color: var(--Color) !important;
+    height: var(--Height);
+    width: var(--Width);
+    border-radius: var(--BorderRadius);
+    padding: var(--Padding);
+}
+.SubMenuButton:focus{
+    background: #555555 !important;
+    display: var(--Display) !important;
+    flex-direction: var(--FlexDirection) !important;
+    justify-content: var(--JustifyContent) !important;
+    font-size: var(--FontSize) !important;
+    font-weight: var(--FontWeight);
+    border: var(--Border) !important;
+    outline:var(--Outline) !important;
+    color: var(--Color) !important;
+    height: var(--Height);
+    width: var(--Width);
+    border-radius: var(--BorderRadius);
+    padding: var(--Padding);
+}
+.SubMenuButton:active{
+    background: #555555 !important;
+    display: var(--Display) !important;
+    flex-direction: var(--FlexDirection) !important;
+    justify-content: var(--JustifyContent) !important;
+    font-size: var(--FontSize) !important;
+    font-weight: var(--FontWeight);
+    border: var(--Border) !important;
+    outline:var(--Outline) !important;
+    color: var(--Color) !important;
+    height: var(--Height);
+    width: var(--Width);
+    border-radius: var(--BorderRadius);
+    padding: var(--Padding);
+}
