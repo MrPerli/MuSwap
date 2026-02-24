@@ -39,7 +39,16 @@ export const formatCurrency = (
     if(amount < 0.001 && amount > 0){
         return "<0.001"
     }
-    return new Intl.NumberFormat(locale, defaultOptions).format(amount)
+
+    let unit:string = ''
+    if(amount >= 10000){
+        amount = amount / 10000
+        unit = '万'
+    }else if(amount >= 100000000){
+        amount = amount / 100000000
+        unit = '亿'
+    }
+    return new Intl.NumberFormat(locale, defaultOptions).format(amount) + unit
 }
 
 export const formatTimeForTX = (timestamp: number): string =>{
