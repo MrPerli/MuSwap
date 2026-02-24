@@ -143,3 +143,13 @@ export interface GetSwapRecordVariables{
 export interface GetSwapRecordResp{
     swaps: Swap[]
 }
+
+// 查询与某个代币相关的流动性池的请求变量类型
+export type GetTokenRelatedPoolsVariables = {
+  tokenAddress: string;
+};
+
+// 查询与某个代币相关的流动性池的响应类型
+export interface GetTokenRelatedPoolsResponse {
+  pools: Pool[];
+}

@@ -233,3 +233,37 @@ export const GET_SWAP_RECORD_BY_ACCOUNT = gql`
     }
   }
 `
+
+// 查询与某个代币相关的流动性池信息，包括代币信息
+export const GET_TOKEN_RELATED_POOLS = gql`
+  query GetTokenRelatedPools($tokenAddress: String!) {
+    pools(
+      where: {
+        or: [
+          { token0: $tokenAddress },
+          { token1: $tokenAddress }
+        ]
+      },
+      orderBy: totalValueLockedUSD,
+      orderDirection: desc,
+      first: 15
+    ) {
+      id
+      feeTier
+      totalValueLockedUSD
+      volumeUSD
+      token0 {
+        id
+        symbol
+        name
+        decimals
+      }
+      token1 {
+        id
+        symbol
+        name
+        decimals
+      }
+    }
+  }
+`;

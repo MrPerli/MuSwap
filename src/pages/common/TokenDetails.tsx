@@ -1,6 +1,6 @@
-import { Navigate, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { MuBreadcrumb, type MuBreadcrumbItemType } from "@Mu/components/common/MuBreadcrumb"
-import { ArrowDownOutlined, RightOutlined, SettingOutlined } from "@ant-design/icons"
+import { RightOutlined, SettingOutlined } from "@ant-design/icons"
 import { Avatar, Checkbox, Dropdown } from "antd"
 import { MuStatistic } from "@Mu/components/common/MuStatistic"
 import { MuMenu, type MuMenuItemType } from "@Mu/components/common/MuMenu"
@@ -8,14 +8,13 @@ import MuTable, { type MuTableColumn } from "@Mu/components/common/MuTable"
 import { useEffect, useState } from "react"
 import { useTokens } from "@Mu/hooks/useTokens"
 import { findToken, type TokenInfo } from "@Mu/types/TokenTypes"
-import { TokenOperator } from "@Mu/components/transaction/TokenOperator"
 import { TokenAddressShow } from "@Mu/components/token/TokenAddressShow"
-import { flexColumnStyle } from "@Mu/components/common/MuStyles"
 import { TokenPriceChart } from "@Mu/components/charts/TokenPriceChart"
 import { useSwapRecord } from "@Mu/hooks/uniswap/useSwapRecord"
-import type { Swap } from "@Mu/types/Uniswap"
+import type { Pool, Swap } from "@Mu/types/Uniswap"
 import { formatCurrency, formatTimeForTX } from "@Mu/utils/Format"
 import { ExchangeModule } from "@Mu/components/transaction/ExchangeModule"
+import { useTokenPools } from "@Mu/hooks/uniswap/useTokenPools"
 
 export const TokenDetails = () => {
     // hooks
@@ -38,7 +37,6 @@ export const TokenDetails = () => {
     const [currTable, setCurrTable] = useState<'tx' | 'pool'>('tx')
     const {tokens} = useTokens()
     
-    
 
     // 获取当前的Token信息
     const [token,setToken] = useState<TokenInfo | undefined>(undefined)
@@ -57,6 +55,14 @@ export const TokenDetails = () => {
         loading: fetchingSwaps,
         refetch: refetchSwaps,
     } = useSwapRecord(token?.id??"", 1, 20)
+
+    
+    // 调用useTokenPools hook
+    const { 
+        pools, 
+        loading:fetchingPools,
+        refetch: refetchPools,
+    } = useTokenPools(token?.id!)
 
     // 初始化当前页面的面包屑数据
     const BreadcrumbItems: MuBreadcrumbItemType[] = [
@@ -247,30 +253,118 @@ export const TokenDetails = () => {
     ]
 
     // 关联资金池列表表头
-    const pool_table_columns: MuTableColumn<string>[] = [
+    const pool_table_columns: MuTableColumn<Pool>[] = [
         {
             title: '#',
+            width: '40px',
+            justifyContent:'center',
+            render:(record, index) =>{
+                return (
+                    <div style={{paddingTop:'10px', paddingBottom:'10px', fontWeight:600, alignItems:'center', display:'flex', flexDirection:'row', gap:'4px'}}>
+                        {index + 1}
+                    </div>
+                )
+            }
         },
         {
             title: '资金池',
+            render:(record, index) =>{  
+                return (
+                    <div style={{display:'flex', flexDirection:'row', gap:'5px', alignItems:'center', paddingTop:'10px', paddingBottom:'10px', fontWeight:600}}>
+                        <div style={{display:'flex', flexDirection:'row', gap:'1px', alignItems:'center'}}>
+                            <div
+                                style={{
+                                    width: "15px", // 宽度
+                                    height: "30px", // 高度是宽度的一半
+                                    borderRadius: "30px 0px 0px 30px", // 左上和右上圆角
+                                    overflow: "hidden", // 隐藏超出部分
+                                }}
+                                >
+                                <Avatar
+                                    style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    background:'#d1d1d1',
+                                    }}
+                                    src={findToken(record.token0.id, tokens)?.logoURI}
+                                />
+                                
+                            </div>
+                            <div
+                                style={{
+                                    width: "15px", // 宽度
+                                    height: "30px", // 高度是宽度的一半
+                                    borderRadius: "0 30px 30px 0", // 左上和右上圆角
+                                    overflow: "hidden", // 隐藏超出部分
+                                }}
+                            >
+                                <Avatar
+                                    style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    marginLeft: "-15px", // 负边距使两个头像重叠
+                                    background:'#d1d1d1',
+                                    }}
+                                    src={findToken(record.token1.id, tokens)?.logoURI}
+                                />
+                            </div>
+                        </div>
+                        <div style={{color:'whitesmoke'}}>{record.token0.symbol}</div>
+                        <div style={{color:'darkgray'}}>/</div>
+                        <div style={{color:'whitesmoke'}}>{record.token1.symbol}</div>
+                    </div>
+                )
+            }
         },
         {
             title: '协议',
+            width:'60px',
+            justifyContent:'center',
+            render:(record, index) =>{  
+                return (
+                    <div style={{paddingTop:'10px', paddingBottom:'10px', fontWeight:600, alignItems:'center', display:'flex', flexDirection:'row', gap:'4px'}}>
+                        V3
+                    </div>
+                )
+            }
         },
         {
             title: '费用等级',
+            width:'100px',
+            justifyContent:'center',
+            render:(record, index) =>{  
+                return (
+                    <div style={{paddingTop:'10px', paddingBottom:'10px', fontWeight:600, alignItems:'center', display:'flex', flexDirection:'row', gap:'4px'}}>
+                        {record.feeTier / 10000}%
+                    </div>
+                )
+            }
         },
         {
             title: 'TVL',
+            justifyContent:'right',
+            render:(record, index) =>{  
+                return (
+                    <div style={{paddingTop:'10px', paddingBottom:'10px', fontWeight:600, alignItems:'center', display:'flex', flexDirection:'row', gap:'4px'}}>
+                        US${formatCurrency(parseFloat(record.totalValueLockedUSD))}
+                    </div>
+                )
+            }
         },
-        {
-            title: '年利率',
-        },
-        {
-            title: 'TVL',
-        },
+        // {
+        //     title: '年利率',
+        //     justifyContent:'right',
+        // },
         {
             title: '交易量',
+            justifyContent:'right',
+            render:(record, index) =>{  
+                return (
+                    <div style={{paddingTop:'10px', paddingBottom:'10px', fontWeight:600, alignItems:'center', display:'flex', flexDirection:'row', gap:'4px'}}>
+                        US${formatCurrency(parseFloat(record.volumeUSD))}
+                    </div>
+                )
+            }
         },
     ]
 
@@ -345,6 +439,7 @@ export const TokenDetails = () => {
                                     refetchSwaps()
                                 }else{
                                     // 重新获取资金池
+                                    refetchPools()
                                 }
                             }}
                         />
@@ -360,7 +455,10 @@ export const TokenDetails = () => {
                                 }}
                             />
                             :
-                            <MuTable columns={pool_table_columns} />
+                            <MuTable 
+                                columns={pool_table_columns} 
+                                data={pools} 
+                                loading={fetchingPools} />
                         }
                     </div>
                 </div>
