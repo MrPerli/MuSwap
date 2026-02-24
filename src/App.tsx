@@ -1,4 +1,4 @@
-import { Affix, Layout } from 'antd'
+import { Affix, Avatar, Layout } from 'antd'
 import styles from '@MuAssets/css/App.module.css'
 import { Header} from 'antd/es/layout/layout'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
@@ -10,8 +10,8 @@ import { Explor } from '@Mu/pages/explor/Explor'
 import { NotFound } from '@MuPages/NotFound'
 import { TokenDetails } from '@Mu/pages/common/TokenDetails'
 import { MainMenus } from '@Mu/config/Menus'
-
-
+import Icon from '@ant-design/icons'
+import { AppLogo } from '@Mu/config/Icons'
 
 const App = () =>{
     return (
@@ -19,17 +19,20 @@ const App = () =>{
             <Layout className={styles.MainLayout}>
                 <Affix offsetTop={0}>
                     <Header className={styles.Header}>
-                        <MuMenu 
-                            data={MainMenus} 
-                            styles={{
-                                MainMenuItemNormal:{color:'#c1c1c1', fontSize:'26px', cursor:'pointer'},
-                                MainMenuItemPreSelect:{color:'#ef6eed', fontSize:'26px', cursor:'pointer'},
-                                MainMenuItemSelected:{color:'#f52df2', fontSize:'26px', cursor:'pointer'},
-                                SubMenuItemNormal:{color:'#a3a3a3', fontSize:'20px', background:'#282828', borderRadius:'8px', cursor:'pointer', padding:'8px', width:'120px'},
-                                SubMenuItemPreSelect:{color:'#a3a3a3', fontSize:'20px', background:'#323232', borderRadius:'8px', cursor:'pointer', padding:'8px', width:'120px'},
-                                SubMenuItemSelected:{color:'#a3a3a3', fontSize:'20px', background:'#282828', borderRadius:'8px', cursor:'pointer', padding:'8px', width:'120px'},
-                            }}
-                        />
+                        <div style={{display:'flex', flexDirection:'row', gap:20, alignItems:'center'}}>
+                            <Avatar src={AppLogo} size={30} shape="square"></Avatar>
+                            <MuMenu 
+                                data={MainMenus} 
+                                styles={{
+                                    MainMenuItemNormal:{color:'#c1c1c1', fontSize:'26px', cursor:'pointer'},
+                                    MainMenuItemPreSelect:{color:'#ef6eed', fontSize:'26px', cursor:'pointer'},
+                                    MainMenuItemSelected:{color:'#f52df2', fontSize:'26px', cursor:'pointer'},
+                                    SubMenuItemNormal:{color:'#a3a3a3', fontSize:'20px', background:'#282828', borderRadius:'8px', cursor:'pointer', padding:'8px', width:'120px'},
+                                    SubMenuItemPreSelect:{color:'#a3a3a3', fontSize:'20px', background:'#323232', borderRadius:'8px', cursor:'pointer', padding:'8px', width:'120px'},
+                                    SubMenuItemSelected:{color:'#a3a3a3', fontSize:'20px', background:'#282828', borderRadius:'8px', cursor:'pointer', padding:'8px', width:'120px'},
+                                }}
+                            />
+                        </div>
                         <WalletConnect/>
                     </Header>
                 </Affix>

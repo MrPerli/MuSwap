@@ -90,6 +90,22 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
                 token={innerBuyToken}
                 onTokenChanged={onBuyTokenChanged}
             />
+
+            <div 
+                style={{
+                    width:'100%', 
+                    height:'50px', 
+                    background:'#222222', 
+                    borderRadius:'10px', 
+                    display:'flex', 
+                    justifyContent:'center', 
+                    alignItems:'center', 
+                    cursor:'pointer',
+                    userSelect:'none',
+                }}
+            >
+                    提交
+                </div>
         </div>
     )
 }

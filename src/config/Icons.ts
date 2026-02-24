@@ -1,3 +1,5 @@
+// app logo
+import app_logo from '@MuAssets/mu.png'
 // chain icons
 import arbitrum_logo from "@MuAssets/chain_icons/arbitrum.png";
 import avalanche_logo from "@MuAssets/chain_icons/avalanche.png";
@@ -54,3 +56,6 @@ export const PortoIcon:string = porto_logo
 
 // defalut token icon
 export const ETH:string = ether_native_icon
+
+// AppLogo
+export const AppLogo:string = app_logo
