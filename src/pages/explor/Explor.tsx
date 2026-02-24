@@ -27,7 +27,7 @@ export const Explor = () => {
         <div>
             <Row>
                 <Col span={24}>
-                    <div style={{display:'flex', flexDirection:'row', gap:'20px', justifyContent:'space-between', alignItems:'center', padding:'20px'}}>
+                    {/* <div style={{visibility:'collapse', display:'flex', flexDirection:'row', gap:'20px', justifyContent:'space-between', alignItems:'center', padding:'20px'}}>
                         <div style={{display:'flex', flexDirection:'column'}}>
                             <span style={{color:'#6b6b6b'}}>1日交易量</span>
                             <span style={{fontSize:'20px'}}>US$10.11亿</span>
@@ -68,7 +68,7 @@ export const Explor = () => {
                                 <span>0.35%今天</span>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </Col>
             </Row>
             <Row>
