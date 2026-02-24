@@ -41,7 +41,7 @@ export const formatCurrency = (
     }
 
     let unit:string = ''
-    if(amount >= 10000){
+    if(amount >= 10000 && amount < 100000000){
         amount = amount / 10000
         unit = '万'
     }else if(amount >= 100000000){
