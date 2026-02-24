@@ -267,3 +267,19 @@ export const GET_TOKEN_RELATED_POOLS = gql`
     }
   }
 `;
+
+// 查询代币信息
+export const GET_TOKEN_STATUS = gql`
+  query GetTokenStatus($tokenAddress: String!) {
+    token(id: $tokenAddress) {
+      id
+      symbol
+      name
+      decimals
+      totalSupply
+      derivedETH
+      volumeUSD
+      totalValueLockedUSD
+    }
+  }
+`;

@@ -153,3 +153,24 @@ export type GetTokenRelatedPoolsVariables = {
 export interface GetTokenRelatedPoolsResponse {
   pools: Pool[];
 }
+
+// 查询代币信息的请求变量类型
+export interface GetTokenStatusVariables {
+  tokenAddress: string;
+}
+
+export interface TokenStatus {
+  id: string;
+  symbol: string;
+  name: string;
+  decimals: number;
+  totalSupply: string;
+  derivedETH: string;
+  volumeUSD: string;
+  totalValueLockedUSD: string;
+}
+
+// 查询代币信息的响应类型
+export interface GetTokenStatusResponse {
+  token: TokenStatus;
+}

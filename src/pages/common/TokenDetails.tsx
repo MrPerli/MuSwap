@@ -15,6 +15,8 @@ import type { Pool, Swap } from "@Mu/types/Uniswap"
 import { formatCurrency, formatTimeForTX } from "@Mu/utils/Format"
 import { ExchangeModule } from "@Mu/components/transaction/ExchangeModule"
 import { useTokenPools } from "@Mu/hooks/uniswap/useTokenPools"
+import { useTokenStatus } from "@Mu/hooks/uniswap/useTokenStatus"
+import { useChainLinkETHPrice } from "@Mu/hooks/chainlink/useChainLinkETHPrices"
 
 export const TokenDetails = () => {
     // hooks
@@ -57,12 +59,24 @@ export const TokenDetails = () => {
     } = useSwapRecord(token?.id??"", 1, 20)
 
     
-    // 调用useTokenPools hook
+    // 查询代币相关的资金池信息
     const { 
         pools, 
         loading:fetchingPools,
         refetch: refetchPools,
     } = useTokenPools(token?.id!)
+
+    // 查询代币状态(TVL、交易量以及总发行量等信息)
+    const { tokenStatus, loading: fetchingTokenStatus } = useTokenStatus(token?.id!)
+
+    // 查询ETH价格以计算FDV
+    const { price: ethPrice} = useChainLinkETHPrice()
+    const [fdv, setFDV] = useState<number>(0)
+    useEffect(()=>{
+        if(ethPrice !== null && tokenStatus !== undefined){
+            setFDV(ethPrice * parseFloat(tokenStatus?.derivedETH!) * (tokenStatus?.totalSupply ? parseFloat(tokenStatus?.totalSupply) : 0) / (10**tokenStatus?.decimals!))
+        }
+    }, [ethPrice, tokenStatus])
 
     // 初始化当前页面的面包屑数据
     const BreadcrumbItems: MuBreadcrumbItemType[] = [
@@ -271,10 +285,10 @@ export const TokenDetails = () => {
             render:(record, index) =>{  
                 return (
                     <div style={{display:'flex', flexDirection:'row', gap:'5px', alignItems:'center', paddingTop:'10px', paddingBottom:'10px', fontWeight:600}}>
-                        <div style={{display:'flex', flexDirection:'row', gap:'1px', alignItems:'center'}}>
+                        <div style={{display:'flex', flexDirection:'row', gap:'2px', alignItems:'center'}}>
                             <div
                                 style={{
-                                    width: "15px", // 宽度
+                                    width: "14px", // 宽度
                                     height: "30px", // 高度是宽度的一半
                                     borderRadius: "30px 0px 0px 30px", // 左上和右上圆角
                                     overflow: "hidden", // 隐藏超出部分
@@ -292,7 +306,7 @@ export const TokenDetails = () => {
                             </div>
                             <div
                                 style={{
-                                    width: "15px", // 宽度
+                                    width: "14px", // 宽度
                                     height: "30px", // 高度是宽度的一半
                                     borderRadius: "0 30px 30px 0", // 左上和右上圆角
                                     overflow: "hidden", // 隐藏超出部分
@@ -331,7 +345,7 @@ export const TokenDetails = () => {
         {
             title: '费用等级',
             width:'100px',
-            justifyContent:'center',
+            justifyContent:'right',
             render:(record, index) =>{  
                 return (
                     <div style={{paddingTop:'10px', paddingBottom:'10px', fontWeight:600, alignItems:'center', display:'flex', flexDirection:'row', gap:'4px'}}>
@@ -422,10 +436,10 @@ export const TokenDetails = () => {
                     <div>
                         <div style={{fontSize:'30px'}}>统计数据</div>
                         <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', gap:'20px'}}>
-                            <MuStatistic title={'TVL'} value={`US$${1.9}亿`}/>
-                            <MuStatistic title={'市值'} value={`US$${1866.4}亿`}/>
-                            <MuStatistic title={'FDV'} value={`US$${1921.0}亿`}/>
-                            <MuStatistic title={'1天交易量'} value={`US$${5.9}亿`}/>
+                            <MuStatistic title={'TVL'} value={`US$${formatCurrency(tokenStatus?.totalValueLockedUSD ? parseFloat(tokenStatus?.totalValueLockedUSD) : 0)}`}/>
+                            {/* <MuStatistic title={'市值'} value={`US$${1866.4}亿`}/> */}
+                            <MuStatistic title={'FDV'} value={`US$${formatCurrency(fdv)}`}/>
+                            <MuStatistic title={'交易量'} value={`US$${formatCurrency(tokenStatus?.volumeUSD ? parseFloat(tokenStatus?.volumeUSD) : 0)}`}/>
                         </div>
                     </div>
                     {/* 交易和资金池信息 */}
