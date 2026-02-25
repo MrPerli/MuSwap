@@ -65,7 +65,7 @@ export const useTokensBalance = (
         // 创建所有tokens的查询参数
         const contracts = tokens?.map(token => ({
                 abi:erc20Abi,
-                address:token.id,
+                address:token.id as `0x${string}`,
                 functionName: 'balanceOf' as const,
                 args:[accountAddress],
                 chainId: token.chainId,
