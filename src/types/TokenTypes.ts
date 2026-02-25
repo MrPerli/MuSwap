@@ -1,7 +1,7 @@
 import { ETH } from "@Mu/config/Icons"
 
 export interface TokenInfo{
-    id: `0x${string}` // Token合约在链上的地址
+    id: `0x${string}` | string // Token合约在链上的地址
     chainId: number   // Token所在的区块链网络ID
     name: string      // Token名字
     symbol: string    // Token符号
