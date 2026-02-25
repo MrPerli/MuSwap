@@ -25,7 +25,7 @@ export const useTokenBalance = (account:string, tokenAddress:string, chainId:num
         args:[],
         chainId: chainId,
         query:{
-            enabled: !!tokenAddress
+            enabled: !!tokenAddress && tokenAddress !== '0x0000000000000000000000000000000000000000'
         }
     })
 
@@ -42,7 +42,7 @@ export const useTokenBalance = (account:string, tokenAddress:string, chainId:num
         args:[account as `0x${string}`],
         chainId: chainId,
         query:{
-            enabled: !!account && !!tokenAddress
+            enabled: !!account && !!tokenAddress  && tokenAddress !== '0x0000000000000000000000000000000000000000'
         }
     })
 
