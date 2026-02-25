@@ -1,5 +1,8 @@
 import { ETH } from "@Mu/config/Icons"
 
+// 以太坊主网原生代币的特殊ID
+export const ETHMAIN_NATIVE_TOKEN_ID = '0x0000000000000000000000000000000000000000'
+
 export interface TokenInfo{
     id: `0x${string}` | string // Token合约在链上的地址
     chainId: number   // Token所在的区块链网络ID
@@ -14,6 +17,15 @@ export interface TokenInfo{
     logoURI?: string  // Token的图标URI
 }
 
+// 原生代币对象
+export const NATIVE_TOKEN:TokenInfo = {
+    id: ETHMAIN_NATIVE_TOKEN_ID,
+    chainId: 1,
+    name: 'Ethereum',
+    symbol: 'ETH',
+    decimals: 18,
+    logoURI: ETH,
+}
 
 export interface TokenInfoExpend extends TokenInfo{
     volume24h?: number,
@@ -48,9 +60,9 @@ export const findToken = (id_symbol: string, tokens: TokenInfo[]):TokenInfo | un
         return undefined
     }
 
-    if(id_symbol === '0x0000000000000000000000000000000000000000' || id_symbol === 'ETH'){
+    if(id_symbol === ETHMAIN_NATIVE_TOKEN_ID || id_symbol === 'ETH'){
         let ret: TokenInfo = {
-            id: `0x0000000000000000000000000000000000000000`,
+            id: ETHMAIN_NATIVE_TOKEN_ID,
             chainId: 1,   
             name: 'Ether',      // Token名字
             symbol: 'ETH',    // Token符号
