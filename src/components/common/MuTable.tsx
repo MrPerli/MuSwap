@@ -22,6 +22,7 @@ export interface MuTableProps<T>{
     hasScrollBar?: boolean
     maxHeight?: `${number}px`
     loading?: boolean
+    fixTop?: number
     onSelected?: (record:T) => void 
 }
 
@@ -63,7 +64,7 @@ function MuTable<T>(props: MuTableProps<T>){
             style={{
             }}
         >
-            <Affix offsetTop={80}>
+            <Affix offsetTop={props.fixTop ?? 80}>
                 <div style={{background:'#101010'}}>
                     <div 
                         key={'MuTable-Header'} 
