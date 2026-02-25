@@ -1,7 +1,7 @@
 import { ExchangeModule } from "@Mu/components/transaction/ExchangeModule"
 import { AppLogo } from "@Mu/config/Icons"
 import { useTokens } from "@Mu/hooks/useTokens"
-import { findToken } from "@Mu/types/TokenTypes"
+import { findToken, NATIVE_TOKEN } from "@Mu/types/TokenTypes"
 import { Avatar } from "antd"
 
 export const Home = () => {
@@ -33,8 +33,8 @@ export const Home = () => {
             {/* 交易模块 */}
             <ExchangeModule 
                 style={{width:'40%'}}
-                saleToken={findToken('ETH', tokens)}
-                buyToken={findToken('USDC', tokens)} 
+                defaultSaleToken={findToken('ETH', tokens) ?? NATIVE_TOKEN}
+                defaultBuyToken={findToken('USDT', tokens) ?? NATIVE_TOKEN} 
             />
         </div>
     )

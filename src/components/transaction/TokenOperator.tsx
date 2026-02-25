@@ -1,19 +1,18 @@
 import { TokenSelector } from "@Mu/components/token/TokenSelector"
 import { MuInput } from "@Mu/components/common/MuInput"
 import { commBorder } from "@Mu/components/common/MuStyles"
-import type { TokenInfo } from "@Mu/types/TokenTypes"
-import { useNavigate } from "react-router-dom"
+import { type TokenInfo } from "@Mu/types/TokenTypes"
 import { useEffect, useState } from "react"
-import { useAccount, useBalance } from "wagmi"
+import { useAccount } from "wagmi"
 import { useTokenBalance } from "@Mu/hooks/useTokenBalance"
 import { formatCurrency } from "@Mu/utils/Format"
 import { useChainLinkETHPrice } from "@Mu/hooks/chainlink/useChainLinkETHPrices"
 import { useTokenStatus } from "@Mu/hooks/uniswap/useTokenStatus"
 
 export interface TokenOperatorProps{
-    type?:'sale'|'buy'
-    token?: TokenInfo
-    isCurrent?:boolean
+    type?:'sale'|'buy' // 出售还是购买,不同的类型在UI上会有一些差异,比如出售时会有数额快速填充工具栏,购买时则没有
+    defaultToken: TokenInfo // 默认选中的代币,必传
+    defaultAmount?: number // 默认数额,选传
     onTokenChanged?:(token:TokenInfo) => void
     onAmountChanged?:(amount:number) => void
 }
@@ -22,22 +21,21 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
     // props
     const {
         type='sale',
-        token,
-        isCurrent = false,
+        defaultToken,
         onTokenChanged,
         onAmountChanged,
     } = {...props}
 
-    // 内部状态,用于控制当前选中的代币,内部均使用这个状态
-    const [innerToken, setInnerToken] = useState<TokenInfo | undefined>(token)
+    // 内部Token状态,用于控制当前选中的代币,内部均使用这个状态
+    const [innerToken, setInnerToken] = useState<TokenInfo | undefined>(defaultToken)
     useEffect(()=>{
-        setInnerToken(token)
-    }, [token])
+        setInnerToken(defaultToken)
+    }, [defaultToken])
 
     // 页面跳转hook,用来切换当前代币后自动跳转到对应代币的详情页
-    const navigate = useNavigate()
+    //const navigate = useNavigate()
 
-    // 获取当前账户地址
+    // 获取当前账户地址,用来获取当前账户的代币余额等信息
     const account = useAccount() 
     const [accountAddress, setAccountAddress] = useState<string>('')
     useEffect(()=>{
@@ -48,7 +46,7 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
         setAccountAddress(`0xE66BAa0B612003AF308D78f066Bbdb9a5e00fF6c`/*account.address === undefined ? '' : account.address.toString()*/)
     }, [account])
 
-    // 获取当前选中的代币的余额
+    // 当前代币余额
     const {
         data:balance,
     } = useTokenBalance(
@@ -56,32 +54,6 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
         innerToken === undefined || innerToken.id === undefined ? '' : innerToken.id, 
         account.chainId ?? 1
     )
-
-    // 获取原生代币余额
-    const {
-        data:nativeBalance, 
-    } = useBalance({address:accountAddress as `0x${string}`})
-
-    // 处理代币余额的显示,因为原生代币的余额需要特殊处理
-    const [toknBalance, setTokenBalance] = useState<number>(0)
-    useEffect(()=>{
-        setTokenBalance(balance ?? 0)
-    },[balance])
-    useEffect(()=>{
-        if(innerToken === undefined || innerToken.id === undefined){
-            return
-        }
-
-        if(innerToken.symbol === 'ETH'){
-            if(nativeBalance !== undefined){
-                setTokenBalance(Number(nativeBalance.value / (10n ** BigInt(innerToken.decimals ?? 18))))
-            }
-        }else{
-            setTokenBalance(balance ?? 0)
-        }
-    },[innerToken])
- 
-    
 
     // 数额快速填充工具栏显示状态,仅在出售时显示
     const [showFastAmount, setShowFastAmount] = useState<boolean>(false)
@@ -92,7 +64,7 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
         setAmount('')
     }, [innerToken])
     const fastFillAmount = (amountPersent: number) => {
-        let fllAmount = toknBalance * amountPersent
+        let fllAmount = balance * amountPersent
         setAmount(fllAmount.toString())
     }
 
@@ -136,15 +108,10 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
 
     // 代币选择器的选择事件回调函数
     const onTokenSelected = (_token:TokenInfo) => {
-        if(isCurrent){
-            // 当前代币,如果切换则需要切换代币页面的
-            navigate(`/TokenDetails/${_token.id}`, {replace:true})
-        }else{
-            // 仅切换代币相关信息
-            setInnerToken(_token)
-        }
+        // 设置当前选中的代币状态
+        setInnerToken(_token)
 
-        // 抛给外面使用
+        // 通知外部,当前组件内部已经切换了代币,外部可以根据需要做一些处理
         if(onTokenChanged !== undefined){
             onTokenChanged(_token)
         }
@@ -217,7 +184,7 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
                 {
                     // 只有出售代币才需要显示余额
                     type === 'sale' ?
-                    <div>{formatCurrency(toknBalance)}{' '}{innerToken?.symbol}</div>
+                    <div>{formatCurrency(balance)}{' '}{innerToken?.symbol}</div>
                     :
                     <div></div>
                 }

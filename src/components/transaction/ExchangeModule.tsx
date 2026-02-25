@@ -2,63 +2,91 @@ import { ArrowDownOutlined } from "@ant-design/icons"
 import { flexColumnStyle } from "@Mu/components/common/MuStyles"
 import { TokenOperator } from "@Mu/components/transaction/TokenOperator"
 import type { TokenInfo } from "@Mu/types/TokenTypes"
-import type { Property } from "csstype"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 
-// 交易模块
+// 交易模块Props
 interface  ExchangeModuleProps{
-    saleToken?: TokenInfo
-    buyToken?: TokenInfo
+    defaultSaleToken: TokenInfo
+    defaultBuyToken: TokenInfo
+    currentToken?: TokenInfo // 当前正在操作的Token,选传,用于在查看代币详情时
     style?: React.CSSProperties
 }
 export const ExchangeModule = (props: ExchangeModuleProps) => {
     const {
-        saleToken,
-        buyToken,
+        defaultSaleToken,
+        defaultBuyToken,
         style,
     } = {...props}
 
-    const onSaleBuyChangeClick = () => {
-        let tempIsCurrent = saleTokenIsCurrent
-        setSaleTokenIsCurrent(buyTokenIsCurrent)
-        setBuyTokenIsCurrent(tempIsCurrent)
-
-        let tempToken = innerSaleToken
-        setInnerSaleToken(innerBuyToken)
-        setInnerBuyToken(tempToken)
-    }
-
-    const [innerSaleToken, setInnerSaleToken] = useState<TokenInfo>()
+    // 出售代币
+    const [saleToken, setSaleToken] = useState<TokenInfo>(defaultSaleToken)
     useEffect(()=>{
-        setInnerSaleToken(saleToken)
-    },[saleToken])
-
-    const [saleTokenIsCurrent, setSaleTokenIsCurrent] = useState<boolean>(false)
-
-    const [innerBuyToken, setInnerBuyToken] = useState<TokenInfo>()
-    useEffect(()=>{
-        if(buyTokenIsCurrent){
-            setInnerBuyToken(buyToken)
+        if(defaultSaleToken === undefined){
+            return
         }
-    },[buyToken])
+        setSaleToken(defaultSaleToken)
+    },[defaultSaleToken])
 
-    const [buyTokenIsCurrent, setBuyTokenIsCurrent] = useState<boolean>(true)
-
-    const onSaleTokenChanged = (_token: TokenInfo) => {
-        setInnerSaleToken(_token)
+    // 买入代币    
+    const [buyToken, setBuyToken] = useState<TokenInfo>(defaultBuyToken)
+    useEffect(()=>{
+        if(defaultBuyToken === undefined){
+            return
+        }
+        setBuyToken(defaultBuyToken)
+    },[defaultBuyToken])
+    
+    // 检查当前代币是否改变
+    const checkCurrentTokenChange = (token:TokenInfo) => {
+        if(props.currentToken === undefined){
+            return false
+        }
+        return token.id === props.currentToken.id
     }
 
+
+    const navigate = useNavigate()
+
+    // 出售代币切换事件回调函数
+    const onSaleTokenChanged = (_token: TokenInfo) => {
+        // 检查是否要切换当前代币,如果切换了当前代币则需要切换到对应的代币详情页
+        const isCurrent = checkCurrentTokenChange(saleToken)
+        if(isCurrent){
+            // 当前代币,如果切换则需要切换代币页面的
+            navigate(`/TokenDetails/${_token.id}`, {replace:true})
+        }else{
+            // 非当前代币,直接切换
+            setSaleToken(_token)
+        }
+    }
+
+    // 买入代币切换事件回调函数
     const onBuyTokenChanged = (_token: TokenInfo) => {
-        setInnerBuyToken(_token)
+        // 检查是否要切换当前代币,如果切换了当前代币则需要切换到对应的代币详情页
+        const isCurrent = checkCurrentTokenChange(buyToken)
+        if(isCurrent){
+            // 当前代币,如果切换则需要切换代币页面的
+            navigate(`/TokenDetails/${_token.id}`, {replace:true})
+        }else{
+            // 非当前代币,直接切换
+            setBuyToken(_token)
+        }
+    }
+
+    // 当切换出售和购买时
+    const onExchangeSaleBuyBTNClick = () => {
+        const temp = saleToken
+        setSaleToken(buyToken)
+        setBuyToken(temp)
     }
 
     return (
-        <div style={{...flexColumnStyle, gap:'5px', display:'flex', width:style === undefined ? '100%' : style.width  , flexDirection:'column', justifyItems:'center'}}>
+        <div style={{...flexColumnStyle, gap:'5px', display:'flex', userSelect:'none', width:style === undefined ? '100%' : style.width  , flexDirection:'column', justifyItems:'center'}}>
             {/* 出售 */}
             <TokenOperator 
                 type={'sale'} 
-                isCurrent={saleTokenIsCurrent} 
-                token={innerSaleToken}
+                defaultToken={saleToken}
                 onTokenChanged={onSaleTokenChanged}
             />
             {/* 切换按钮 */}
@@ -75,7 +103,7 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
             >
                 <div 
                     key={'saleBuyChange'}
-                    onClick={onSaleBuyChangeClick}
+                    onClick={onExchangeSaleBuyBTNClick}
                     style={{
                         background:'#222222', 
                         width:'50px', 
@@ -83,7 +111,7 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
                         padding:'5px',
                         cursor:'pointer', 
                         borderRadius:'16px', 
-                        border:'5px solid #000'
+                        border:'5px solid #0d0d0d'
                     }}
                 >
                     <ArrowDownOutlined style={{fontSize:'30px', }}/>
@@ -92,8 +120,7 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
             {/* 购买 */}
             <TokenOperator 
                 type={'buy'} 
-                isCurrent={buyTokenIsCurrent} 
-                token={innerBuyToken}
+                defaultToken={buyToken}
                 onTokenChanged={onBuyTokenChanged}
             />
             {/* 提交按钮 */}

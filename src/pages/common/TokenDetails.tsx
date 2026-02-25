@@ -7,7 +7,7 @@ import { MuMenu, type MuMenuItemType } from "@Mu/components/common/MuMenu"
 import MuTable, { type MuTableColumn } from "@Mu/components/common/MuTable"
 import { useEffect, useState } from "react"
 import { useTokens } from "@Mu/hooks/useTokens"
-import { findToken, type TokenInfo } from "@Mu/types/TokenTypes"
+import { findToken, NATIVE_TOKEN, type TokenInfo } from "@Mu/types/TokenTypes"
 import { TokenAddressShow } from "@Mu/components/token/TokenAddressShow"
 import { TokenPriceChart } from "@Mu/components/charts/TokenPriceChart"
 import { useSwapRecord } from "@Mu/hooks/uniswap/useSwapRecord"
@@ -41,7 +41,7 @@ export const TokenDetails = () => {
     
 
     // 获取当前的Token信息
-    const [token,setToken] = useState<TokenInfo | undefined>(undefined)
+    const [token,setToken] = useState<TokenInfo>(NATIVE_TOKEN)
     useEffect(()=>{
         if(tokens !== undefined && tokens.length > 0){
             let findToken = tokens.find(token => token.id === tokenAddress)
@@ -67,7 +67,10 @@ export const TokenDetails = () => {
     } = useTokenPools(token?.id!)
 
     // 查询代币状态(TVL、交易量以及总发行量等信息)
-    const { tokenStatus, loading: fetchingTokenStatus } = useTokenStatus(token?.id!)
+    const { tokenStatus, loading: fetchingTokenStatus, refetch: refetchTokenStatus } = useTokenStatus(token?.id!)
+    useEffect(()=>{
+        refetchTokenStatus()
+    }, [token])
 
     // 查询ETH价格以计算FDV
     const { price: ethPrice} = useChainLinkETHPrice()
@@ -493,7 +496,7 @@ export const TokenDetails = () => {
                                 MainMenuItemSelected:{fontSize:'16px', cursor:'pointer', color:'#f3f3f3', background:'#2b2b2b', borderRadius:'20px', paddingLeft:'10px', paddingRight:'10px', paddingTop:'2px', paddingBottom:'2px'}
                             }}
                         />
-                        <ExchangeModule buyToken={token} saleToken={findToken('ETH', tokens)}/>
+                        <ExchangeModule defaultBuyToken={token} currentToken={token} defaultSaleToken={findToken('ETH', tokens)!}/>
                     </div>
                 </div>
             </div>
