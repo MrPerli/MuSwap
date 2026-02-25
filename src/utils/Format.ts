@@ -1,12 +1,20 @@
+import { ETHMAIN_NATIVE_TOKEN_ID } from "@Mu/types/TokenTypes"
+
 export const formatAddress = (address: string): string => {
+    // 如果地址为空,直接返回空字符串
     if (!address) {
         return ''
     }
 
+    // 如果地址已经是缩略形式,直接返回
     if (address.includes('...')){
       return address
     }
     
+    if (address === ETHMAIN_NATIVE_TOKEN_ID) {
+        return 'Native'
+    }
+
     return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
