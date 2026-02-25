@@ -1,5 +1,5 @@
 import { ETH } from "@Mu/config/Icons"
-import type { TokenBalance, TokenInfo } from "@Mu/types/TokenTypes"
+import { NATIVE_TOKEN, type TokenBalance, type TokenInfo } from "@Mu/types/TokenTypes"
 import { useEffect, useMemo, useState } from "react"
 import { erc20Abi} from "viem"
 import { useReadContracts, useBalance, useAccount } from "wagmi"
@@ -38,11 +38,7 @@ export const useTokensBalance = (
         if(nativeBalance !== undefined && nativeBalance.value > 0){
             let balances:TokenBalance[] = []
             let eth: TokenBalance = {
-                id:'0x0000000000000000000000000000000000000000',
-                chainId:1,
-                name:'Etheream',
-                symbol:'ETH',
-                logoURI:ETH,
+                ...NATIVE_TOKEN,
                 decimals:nativeBalance.decimals??18,
                 balanceOf:nativeBalance.value??0n,
                 balanceAccount:accountAddress,
