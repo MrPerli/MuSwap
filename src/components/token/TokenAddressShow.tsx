@@ -1,9 +1,10 @@
 import { CheckCircleFilled, CopyFilled } from "@ant-design/icons"
+import { ETHMAIN_NATIVE_TOKEN_ID } from "@Mu/types/TokenTypes"
 import { copyToClipboard } from "@Mu/utils/CommonUtils"
 import { formatAddress } from "@Mu/utils/Format"
 import { message } from "antd"
 import type React from "react"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 export interface TokenAddressShowProps{
     tokenAddress: string | `0x${string}` | undefined
@@ -19,6 +20,10 @@ export const TokenAddressShow= (props: TokenAddressShowProps) => {
     const {tokenAddress, copyness = false, style} = {...props}
     
     const [copied, setCopied] = useState<boolean>(false)
+
+    const canCopy:boolean = useMemo(()=>{
+        return copyness && tokenAddress !== undefined && tokenAddress !== ETHMAIN_NATIVE_TOKEN_ID
+    }, [copyness, tokenAddress])
     return (
         <div
             className='TokenAddressShow' 
@@ -32,6 +37,9 @@ export const TokenAddressShow= (props: TokenAddressShowProps) => {
                 fontSize:style !== undefined && style.fontSize != undefined ? style.fontSize : ''
             }}
             onClick={(event)=>{
+                if(!canCopy){
+                    return
+                }
                 if(copyToClipboard(tokenAddress)){
                     setCopied(true)
                     setTimeout(()=>{
@@ -45,8 +53,8 @@ export const TokenAddressShow= (props: TokenAddressShowProps) => {
             <div>{typeof(tokenAddress) === 'string'? formatAddress(tokenAddress) : tokenAddress}</div>
             {
                 // 是否可以复制地址
-                copyness ? 
-                copied? <CheckCircleFilled style={{fontSize:'75%', color:'#02a355'}}/> : <CopyFilled style={{fontSize:'75%'}}/> 
+                canCopy ? 
+                copied? <CheckCircleFilled style={{fontSize:'75%', color:'#318a05'}}/> : <CopyFilled style={{fontSize:'75%'}}/> 
                 : 
                 null
             }
