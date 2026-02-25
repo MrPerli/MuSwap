@@ -2,17 +2,20 @@ import { ArrowDownOutlined } from "@ant-design/icons"
 import { flexColumnStyle } from "@Mu/components/common/MuStyles"
 import { TokenOperator } from "@Mu/components/transaction/TokenOperator"
 import type { TokenInfo } from "@Mu/types/TokenTypes"
+import type { Property } from "csstype"
 import { useEffect, useState } from "react"
 
 // 交易模块
 interface  ExchangeModuleProps{
     saleToken?: TokenInfo
     buyToken?: TokenInfo
+    style?: React.CSSProperties
 }
 export const ExchangeModule = (props: ExchangeModuleProps) => {
     const {
         saleToken,
         buyToken,
+        style,
     } = {...props}
 
     const onSaleBuyChangeClick = () => {
@@ -50,13 +53,15 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
     }
 
     return (
-        <div style={{...flexColumnStyle, gap:'5px', display:'flex', flexDirection:'column', justifyItems:'center'}}>
+        <div style={{...flexColumnStyle, gap:'5px', display:'flex', width:style === undefined ? '100%' : style.width  , flexDirection:'column', justifyItems:'center'}}>
+            {/* 出售 */}
             <TokenOperator 
                 type={'sale'} 
                 isCurrent={saleTokenIsCurrent} 
                 token={innerSaleToken}
                 onTokenChanged={onSaleTokenChanged}
             />
+            {/* 切换按钮 */}
             <div 
                 
                 style={{
@@ -65,7 +70,7 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
                     justifyContent:'center', 
                     marginTop:'-25px', 
                     marginBottom:'-25px', 
-                    zIndex:'100', 
+                    zIndex:'1', 
                 }}
             >
                 <div 
@@ -84,13 +89,14 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
                     <ArrowDownOutlined style={{fontSize:'30px', }}/>
                 </div>
             </div>
+            {/* 购买 */}
             <TokenOperator 
                 type={'buy'} 
                 isCurrent={buyTokenIsCurrent} 
                 token={innerBuyToken}
                 onTokenChanged={onBuyTokenChanged}
             />
-
+            {/* 提交按钮 */}
             <div 
                 style={{
                     width:'100%', 
@@ -105,7 +111,7 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
                 }}
             >
                     提交
-                </div>
+            </div>
         </div>
     )
 }

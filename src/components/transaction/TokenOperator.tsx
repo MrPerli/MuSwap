@@ -4,10 +4,11 @@ import { commBorder } from "@Mu/components/common/MuStyles"
 import type { TokenInfo } from "@Mu/types/TokenTypes"
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
-import { useAccount } from "wagmi"
+import { useAccount, useBalance } from "wagmi"
 import { useTokenBalance } from "@Mu/hooks/useTokenBalance"
 import { formatCurrency } from "@Mu/utils/Format"
-import { useCmcTokenPrices } from "@Mu/hooks/cmc/useCmcTokenPrices"
+import { useChainLinkETHPrice } from "@Mu/hooks/chainlink/useChainLinkETHPrices"
+import { useTokenStatus } from "@Mu/hooks/uniswap/useTokenStatus"
 
 export interface TokenOperatorProps{
     type?:'sale'|'buy'
@@ -18,6 +19,7 @@ export interface TokenOperatorProps{
 }
 
 export  const TokenOperator = (props: TokenOperatorProps) => {
+    // props
     const {
         type='sale',
         token,
@@ -26,26 +28,111 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
         onAmountChanged,
     } = {...props}
 
+    // 内部状态,用于控制当前选中的代币,内部均使用这个状态
     const [innerToken, setInnerToken] = useState<TokenInfo | undefined>(token)
     useEffect(()=>{
         setInnerToken(token)
     }, [token])
 
+    // 页面跳转hook,用来切换当前代币后自动跳转到对应代币的详情页
     const navigate = useNavigate()
-    const account = useAccount() 
 
+    // 获取当前账户地址
+    const account = useAccount() 
+    const [accountAddress, setAccountAddress] = useState<string>('')
+    useEffect(()=>{
+        if(account.address === undefined){
+            return
+        }
+        // 正式使用要注释掉常量地址,把后面的代码放开
+        setAccountAddress(`0xE66BAa0B612003AF308D78f066Bbdb9a5e00fF6c`/*account.address === undefined ? '' : account.address.toString()*/)
+    }, [account])
+
+    // 获取当前选中的代币的余额
     const {
         data:balance,
-        refetch:refetchBalance,
     } = useTokenBalance(
-        '0xE66BAa0B612003AF308D78f066Bbdb9a5e00fF6c'/*account.address === undefined ? '' : account.address.toString()*/, // 正式使用要把注释放开
-        token === undefined || token.id === undefined ? '' : token.id, 
+        accountAddress, 
+        innerToken === undefined || innerToken.id === undefined ? '' : innerToken.id, 
         account.chainId ?? 1
     )
+
+    // 获取原生代币余额
+    const {
+        data:nativeBalance, 
+    } = useBalance({address:accountAddress as `0x${string}`})
+
+    // 处理代币余额的显示,因为原生代币的余额需要特殊处理
+    const [toknBalance, setTokenBalance] = useState<number>(0)
     useEffect(()=>{
-        refetchBalance()
-    },[token])
+        setTokenBalance(balance ?? 0)
+    },[balance])
+    useEffect(()=>{
+        if(innerToken === undefined || innerToken.id === undefined){
+            return
+        }
+
+        if(innerToken.symbol === 'ETH'){
+            if(nativeBalance !== undefined){
+                setTokenBalance(Number(nativeBalance.value / (10n ** BigInt(innerToken.decimals ?? 18))))
+            }
+        }else{
+            setTokenBalance(balance ?? 0)
+        }
+    },[innerToken])
+ 
     
+
+    // 数额快速填充工具栏显示状态,仅在出售时显示
+    const [showFastAmount, setShowFastAmount] = useState<boolean>(false)
+
+    // 数额
+    const [amount, setAmount] = useState<string>('')
+    useEffect(()=>{
+        setAmount('')
+    }, [innerToken])
+    const fastFillAmount = (amountPersent: number) => {
+        let fllAmount = toknBalance * amountPersent
+        setAmount(fllAmount.toString())
+    }
+
+    // 获取ETH/USD价格
+    const {price:ethPrice} = useChainLinkETHPrice()
+    // 获取当前代币的价格状态,包括其以ETH计价的价格
+    const {tokenStatus, refetch:refetchTokenStatus} = useTokenStatus(innerToken?.id ?? '')
+  
+
+    // 代币价值
+    const [tokenValue, setTokenValue] = useState<number>(0)
+    useEffect(()=>{
+        if(innerToken === undefined){
+            return
+        }
+
+        if(innerToken.symbol === 'ETH'){
+            setTokenValue(Number(amount) * (ethPrice ?? 0))
+        }else{
+            setTokenValue(Number(amount) * (tokenStatus?.derivedETH ? Number(tokenStatus.derivedETH) * (ethPrice ?? 0) : 0))
+        }
+    }, [amount, ethPrice, tokenStatus])
+
+
+    // 组件内部的输入框组件的输入事件回调函数
+    const onMuInputTextChanged = (value:string) => {
+        // 字符串转换成数字处理
+        let v:number = parseFloat(value)
+
+        // 设置数额状态
+        setAmount(value)
+
+        // 获取一次最新代币状态
+        refetchTokenStatus()
+
+        // 通知外部
+        if(onAmountChanged){
+            onAmountChanged(v)
+        }
+    }
 
     // 代币选择器的选择事件回调函数
     const onTokenSelected = (_token:TokenInfo) => {
@@ -60,47 +147,6 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
         // 抛给外面使用
         if(onTokenChanged !== undefined){
             onTokenChanged(_token)
-        }
-    }
-
-    const [showFastAmount, setShowFastAmount] = useState<boolean>(false)
-
-    const [amount, setAmount] = useState<string>('')
-    useEffect(()=>{
-        setAmount('')
-    }, [token])
-    const fastFillAmount = (amountPersent: number) => {
-        let fllAmount = balance * amountPersent
-        setAmount(fllAmount.toString())
-    }
-
-    const [tokensForGetPrice, setTokensForGetPrice] = useState<TokenInfo[]>([])
-    useEffect(()=>{
-        if(innerToken === undefined){
-            return 
-        }
-        let arr: TokenInfo[] = []
-        arr.push(innerToken)
-        setTokensForGetPrice(arr)
-    },[innerToken])
-    const {data:tokenPrice} = useCmcTokenPrices(tokensForGetPrice)
-
-    const [tokenValue, setTokenValue] = useState<number>(0)
-
-    const onMuInputTextChanged = (value:string) => {
-        // 字符串转换成数字处理
-        let v:number = parseFloat(value)
-
-        // 查询价格并计算价值
-        if(tokenPrice.length > 0){
-            setTokenValue(tokenPrice[0].price! * v)
-        }else{
-            setTokenValue(0)
-        }
-
-        // 通知外部
-        if(onAmountChanged){
-            onAmountChanged(v)
         }
     }
 
@@ -171,7 +217,7 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
                 {
                     // 只有出售代币才需要显示余额
                     type === 'sale' ?
-                    <div>{formatCurrency(balance)}{' '}{token?.symbol}</div>
+                    <div>{formatCurrency(toknBalance)}{' '}{innerToken?.symbol}</div>
                     :
                     <div></div>
                 }

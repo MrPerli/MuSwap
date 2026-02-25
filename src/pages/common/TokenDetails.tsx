@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { MuBreadcrumb, type MuBreadcrumbItemType } from "@Mu/components/common/MuBreadcrumb"
 import { RightOutlined, SettingOutlined } from "@ant-design/icons"
-import { Avatar, Checkbox, Dropdown } from "antd"
+import { Affix, Avatar, Checkbox, Dropdown } from "antd"
 import { MuStatistic } from "@Mu/components/common/MuStatistic"
 import { MuMenu, type MuMenuItemType } from "@Mu/components/common/MuMenu"
 import MuTable, { type MuTableColumn } from "@Mu/components/common/MuTable"
@@ -417,19 +417,22 @@ export const TokenDetails = () => {
     return (
         <div style={{overflow:'auto'}}>
             {/* 导航面包屑 */}
-            <div className="TokenDetailsBreadCrumb"  style={{background:'', marginTop:'40px'}}>
-                <MuBreadcrumb items={BreadcrumbItems} separator={<RightOutlined style={{fontSize:'10px'}}/>}/>
-            </div>
-            {/* 页面主体 */}
-            <div className="TokenDetailsBody" style={{background:'', marginTop:'20px', display:'flex', flexDirection:'row', gap:'60px'}}>
-                {/* 左边区域 */}
-                <div className="TokenDetailsBody-Left" style={{width:'65%', background:'', display:'flex', flexDirection:'column', gap:'20px'}}>
+            <Affix offsetTop={40}>
+                <div className="TokenDetailsBreadCrumb"  style={{background:'#101010',marginTop:'40px', display:'flex', flexDirection:'column', gap:'20px'}}>
+                    <MuBreadcrumb items={BreadcrumbItems} separator={<RightOutlined style={{fontSize:'10px'}}/>}/>
                     {/* 代币标题 */}
-                    <div style={{display:'flex', flexDirection:'row', gap:'10px', alignItems:'center'}}>
+                    <div style={{display:'flex', flexDirection:'row', gap:'10px', alignItems:'center', borderBottom:'1px solid #454545', paddingBottom:'20px'}}>
                         <Avatar style={{background:'#d1d1d1'}} src={token !== undefined? token.logoURI : ''}/>
                         <div style={{color:'whitesmoke', fontSize:'20px'}}>{token !== undefined? token.name : ''}</div>
                         <div style={{color:'darkgray', fontSize:'20px'}}>{token !== undefined? token.symbol : ''}</div>
                     </div>
+                </div>
+            </Affix>
+            {/* 页面主体 */}
+            <div className="TokenDetailsBody" style={{background:'', marginTop:'20px', display:'flex', flexDirection:'row', gap:'60px'}}>
+                {/* 左边区域 */}
+                <div className="TokenDetailsBody-Left" style={{width:'65%', background:'', display:'flex', flexDirection:'column', gap:'20px'}}>
+                    
                     {/* 代币价格趋势图 */}
                     <TokenPriceChart tokenInfo={token}/>
                     {/* 统计数据 */}
@@ -463,6 +466,7 @@ export const TokenDetails = () => {
                                 columns={tx_table_columns} 
                                 loading={fetchingSwaps} 
                                 data={swaps} 
+                                fixTop={180}
                                 onSelected={(record)=>{
                                     // 跳转到EtherScan查看具体的交易信息
                                     window.open(`https://etherscan.io/tx/${record.transaction.id}`)
@@ -472,6 +476,7 @@ export const TokenDetails = () => {
                             <MuTable 
                                 columns={pool_table_columns} 
                                 data={pools} 
+                                fixTop={180}
                                 loading={fetchingPools} />
                         }
                     </div>
@@ -488,7 +493,7 @@ export const TokenDetails = () => {
                                 MainMenuItemSelected:{fontSize:'16px', cursor:'pointer', color:'#f3f3f3', background:'#2b2b2b', borderRadius:'20px', paddingLeft:'10px', paddingRight:'10px', paddingTop:'2px', paddingBottom:'2px'}
                             }}
                         />
-                        <ExchangeModule buyToken={token} saleToken={findToken('USDC', tokens)}/>
+                        <ExchangeModule buyToken={token} saleToken={findToken('ETH', tokens)}/>
                     </div>
                 </div>
             </div>
