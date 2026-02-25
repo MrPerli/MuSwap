@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useAccount } from "wagmi"
 import type { TokenInfo } from "@MuTypes/TokenTypes"
+import { ETH } from "@Mu/config/Icons"
 
 
 const CACHE_DURATION = 24 * 60 * 60 * 1000
@@ -17,11 +18,21 @@ interface TokenMetaCache{
     tokens:TokenInfo[]
     cache_date: number
 }
- 
+
+// 原生代币的特殊处理, 因为它没有地址,所以我们约定一个特殊的地址0x0000000000000000000000000000000000000000来代表它
+const nativeToken:TokenInfo = {
+    id: '0x0000000000000000000000000000000000000000',
+    chainId: 1,
+    name: 'Ethereum',
+    symbol: 'ETH',
+    decimals: 18,
+    logoURI: ETH,
+}
+
 export const useTokens = ()=>{
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
-    const [tokens, setTokens] = useState<TokenInfo[]>([])
+    const [tokens, setTokens] = useState<TokenInfo[]>([nativeToken]) // 默认包含原生代币
     const { chainId } = useAccount()
 
     // hook内部方法
@@ -37,7 +48,7 @@ export const useTokens = ()=>{
                 // 如果查到缓存,并且缓存的时间还没有过期,则直接返回缓存
                 console.log(`[ cache ] 获取到了chainId:${chainId}的区块链支持的Tokens${cacheTokens.tokens.length}个`)
                 setLoading(false)
-                setTokens(cacheTokens.tokens)
+                setTokens([nativeToken, ...cacheTokens.tokens])
                 return
             }
         }
@@ -89,10 +100,10 @@ export const useTokens = ()=>{
             localStorage.setItem(`network_${chainId!}`, JSON.stringify({tokens:tokens, timestamp:Date.now()}))
             //tokensCache.set(chainId!, {tokens:tokens, timestamp:Date.now()})
             console.log(`[ network ] 获取到了chainId:${chainId}的区块链支持的Tokens${tokens.length}个`)
-            setTokens(tokens)
+            setTokens([nativeToken, ...tokens])
         } catch (error) {
             console.log(`获取支持的Tokens列表失败:${(error as Error).message}`)
-            setTokens([])
+            setTokens([nativeToken])
         } finally{
             setLoading(false)
         }
