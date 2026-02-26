@@ -5,7 +5,7 @@ export const MainMenus:MuMenuItemType[] = [
     {
         key:'Swap',
         title:"交易", // 两个汉字中间需要加一个空格,否则AntDesign的Button不支持临时修改样式
-        naviPath:"/",
+        naviPath:"/Swap",
     },
     {
         key:'Explor',
@@ -54,7 +54,7 @@ export const MainMenus:MuMenuItemType[] = [
     {
         key:'Portfolio', 
         title:'资产', 
-        naviPath:"/Portfolio/Overview",
+        naviPath:"/Portfolio",
         children:[
             {
                 key:'Overview', 

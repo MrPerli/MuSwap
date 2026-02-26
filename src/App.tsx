@@ -10,7 +10,6 @@ import { Explor } from '@Mu/pages/explor/Explor'
 import { NotFound } from '@MuPages/NotFound'
 import { TokenDetails } from '@Mu/pages/common/TokenDetails'
 import { MainMenus } from '@Mu/config/Menus'
-import Icon from '@ant-design/icons'
 import { AppLogo } from '@Mu/config/Icons'
 
 const App = () =>{
@@ -40,6 +39,7 @@ const App = () =>{
                     <Layout className={styles.MainContainer}>
                         <Routes>
                             <Route path='/' element={<Home/>}/>
+                            <Route path='/Swap' element={<Home/>}/>
                             <Route path='/Portfolio' element={<Portfolio/>}/>
                             <Route path='/Portfolio/:subPage' element={<Portfolio/>}/>
                             <Route path='/Portfolio/:subPage/:accountId' element={<Portfolio/>}/>
