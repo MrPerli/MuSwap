@@ -3,7 +3,7 @@ import { Avatar, Dropdown, List } from "antd"
 import { useAccount, useChains, useSwitchChain } from "wagmi"
 import styles from '../../assets/css/NetworkSelector.module.css'
 import { useEffect, useState } from "react"
-import { EthereumIcon, PolygonIcon, ArbitrumIcon, HardhatIcon } from "../../config/Icons"
+import { EthereumIcon, PolygonIcon, ArbitrumIcon } from "../../config/Icons"
 import { commBorder } from "@Mu/components/common/MuStyles"
 
 

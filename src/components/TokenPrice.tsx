@@ -1,9 +1,8 @@
 // components/UniswapPriceDisplay.tsx
-import React, { useState, useEffect, useMemo } from 'react'
-import { useReadContracts, useBalance, useAccount, useChainId, type Config, type UseReadContractsReturnType } from 'wagmi'
+import { useState, useEffect, useMemo } from 'react'
+import { useReadContracts, useBalance, useChainId, type UseReadContractsReturnType } from 'wagmi'
 import {  Card, Typography, Statistic, Button, Tag, Space, Row, Col, Spin, Alert, Tooltip, Badge, Progress } from 'antd'
 import {  SyncOutlined, DollarOutlined, WalletOutlined, LineChartOutlined, LoadingOutlined, InfoCircleOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons'
-import { formatUnits } from 'viem'
 import type { Address } from 'viem'
 import { formatCurrency } from '@Mu/utils/Format'
 
@@ -59,21 +58,21 @@ interface PriceData {
   lastUpdated: Date
 }
 
-interface PoolContractReads {
-  slot0: {
-    sqrtPriceX96: bigint
-    tick: number
-    observationIndex: number
-    observationCardinality: number
-    observationCardinalityNext: number
-    feeProtocol: number
-    unlocked: boolean
-  }
-  liquidity: bigint
-  token0: Address
-  token1: Address
-  fee: number
-}
+// interface PoolContractReads {
+//   slot0: {
+//     sqrtPriceX96: bigint
+//     tick: number
+//     observationIndex: number
+//     observationCardinality: number
+//     observationCardinalityNext: number
+//     feeProtocol: number
+//     unlocked: boolean
+//   }
+//   liquidity: bigint
+//   token0: Address
+//   token1: Address
+//   fee: number
+// }
 
 // 主流的 Uniswap V3 Pool 配置
 const UNISWAP_POOL_CONFIGS: Record<string, UniswapPoolConfig> = {
@@ -190,7 +189,7 @@ const POOL_ABI = [
 export function UniswapPriceDisplay({
   tokenAddress,
   tokenSymbol = 'TOKEN',
-  tokenDecimals = 18,
+  //tokenDecimals = 18,
   baseCurrencyAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
   baseCurrencySymbol = 'USD',
   refreshInterval = 15000,
@@ -301,7 +300,7 @@ export function UniswapPriceDisplay({
   }) as UseReadContractsReturnType<any, any, any>
 
   // 获取代币余额
-  const { data: tokenBalance, isLoading: isLoadingBalance } = useBalance({
+  const { data: tokenBalance, } = useBalance({
     address,
     token: tokenAddress,
     query: {
@@ -315,7 +314,7 @@ export function UniswapPriceDisplay({
     if (!poolData || !poolConfig || isLoadingPool) return
 
     try {
-      const [slot0Result, liquidityResult, token0Result, token1Result, feeResult] = poolData
+      const [slot0Result, liquidityResult,] = poolData
       
       //console.log(`slot0Result(${slot0Result}),liquidityResult(${liquidityResult}), token0Result(${token0Result}), token1Result(${token1Result}), feeResult(${feeResult})`)
       // 检查是否有错误
@@ -339,7 +338,7 @@ export function UniswapPriceDisplay({
       )
 
       // 格式化价格
-      const formattedPrice = formatPrice(price, baseCurrencySymbol)
+      const formattedPrice = formatPrice(price)
       
       // 模拟价格变化数据（实际项目中应该从历史数据计算）
       const priceChange = simulatePriceChange()
@@ -625,7 +624,7 @@ function calculatePriceFromSqrtPriceX96(
 /**
  * 格式化价格显示
  */
-function formatPrice(price: number, currencySymbol: string): string {
+function formatPrice(price: number, /*currencySymbol: string*/): string {
   if (price === 0) return `0.00`
   
   if (price >= 1000) {

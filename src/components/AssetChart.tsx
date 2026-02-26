@@ -1,4 +1,4 @@
-import { Area, AreaChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import {type FC} from 'react'
 
 export interface AssetDataPoint {
@@ -14,7 +14,6 @@ export interface AssetChartProps {
 
 export const AssetChart:FC<AssetChartProps> = ({
     data = [],
-    timeRange = '1D'
 }) => {
 
     // 数据处理：将时间戳转换为可读格式

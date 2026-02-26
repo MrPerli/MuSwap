@@ -1,6 +1,6 @@
 import { BugFilled } from "@ant-design/icons"
 import { Avatar, Button } from "antd"
-import { Navigate, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 export const NotFound = () => {
     const navigate = useNavigate()

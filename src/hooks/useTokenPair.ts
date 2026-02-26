@@ -8,9 +8,9 @@ const REGISTRY_ADDRESS:Record<number, string> = {
   // ... 其他网络
 }
 
-const CHAINLINK_QUOTE_ADDRESS_ETH:Record<number, string> = {
-   1: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-}
+// const CHAINLINK_QUOTE_ADDRESS_ETH:Record<number, string> = {
+//    1: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+// }
 const CHAINLINK_QUOTE_ADDRESS_USD :Record<number, string> = { 
     1:'0x0000000000000000000000000000000000000348',
 }

@@ -1,5 +1,5 @@
 import { Button, Col, Row } from "antd"
-import { CaretDownFilled, SearchOutlined } from "@ant-design/icons"
+import { SearchOutlined } from "@ant-design/icons"
 import { NetworkSelector } from "@Mu/components/network_choose/NetworkSelector"
 import { MuMenu } from "@Mu/components/common/MuMenu"
 import { useParams } from "react-router-dom"

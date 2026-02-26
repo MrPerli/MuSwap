@@ -67,7 +67,7 @@ export const TokenDetails = () => {
     } = useTokenPools(token?.id!)
 
     // 查询代币状态(TVL、交易量以及总发行量等信息)
-    const { tokenStatus, loading: fetchingTokenStatus, refetch: refetchTokenStatus } = useTokenStatus(token?.id!)
+    const { tokenStatus, loading: _, refetch: refetchTokenStatus } = useTokenStatus(token?.id!)
     useEffect(()=>{
         refetchTokenStatus()
     }, [token])
@@ -109,7 +109,7 @@ export const TokenDetails = () => {
         {
             title: '时间',
             justifyContent:'center',
-            render:(record, index) =>{
+            render:(record, _) =>{
                 
                 return (
                     <div style={{paddingTop:'10px', paddingBottom:'10px'}}>
@@ -143,7 +143,7 @@ export const TokenDetails = () => {
                     </div>
                 </Dropdown>,
             justifyContent:'center',
-            render:(record, index) =>{
+            render:(record, _) =>{
                 let type: 'buy' | 'sale' | undefined = undefined 
                 // 和当前的代币对比
                 if(record.token0.id.toLowerCase() === token?.id.toLowerCase()){
@@ -176,7 +176,7 @@ export const TokenDetails = () => {
         {
             title:`$${token !== undefined? token.symbol: ''}`,
             justifyContent:'center',
-            render:(record, index) =>{
+            render:(record, _) =>{
                 // 和当前的代币对比
                 let count: number = 0 
                 // 和当前的代币对比
@@ -206,7 +206,7 @@ export const TokenDetails = () => {
             title:<div style={{display:'flex', flexDirection:'row', justifyContent:'right'}}>相当于</div>,
             width:'140px',
             justifyContent:'right',
-            render:(record, index) =>{
+            render:(record, _) =>{
                 // 和当前的代币对比
                 let count: number = 0 
                 let symbol: string = ''
@@ -242,7 +242,7 @@ export const TokenDetails = () => {
         {
             title:<div style={{display:'flex', flexDirection:'row', justifyContent:'right'}}>USD</div>,
             justifyContent:'right',
-            render:(record, index) =>{
+            render:(record, _) =>{
                 return (
                     <div style={{paddingTop:'10px', paddingBottom:'10px'}}>
                         US${formatCurrency(record.amountUSD)}
@@ -253,7 +253,7 @@ export const TokenDetails = () => {
         {
             title:<div style={{display:'flex', flexDirection:'row', justifyContent:'right'}}>钱包</div>,
             justifyContent:'right',
-            render:(record, index) =>{
+            render:(record, _) =>{
                 return (
                     <div 
                         style={{paddingTop:'10px', paddingBottom:'10px'}} 
@@ -275,7 +275,7 @@ export const TokenDetails = () => {
             title: '#',
             width: '40px',
             justifyContent:'center',
-            render:(record, index) =>{
+            render:(_, index) =>{
                 return (
                     <div style={{paddingTop:'10px', paddingBottom:'10px', fontWeight:600, alignItems:'center', display:'flex', flexDirection:'row', gap:'4px'}}>
                         {index + 1}
@@ -285,7 +285,7 @@ export const TokenDetails = () => {
         },
         {
             title: '资金池',
-            render:(record, index) =>{  
+            render:(record, _) =>{  
                 return (
                     <div style={{display:'flex', flexDirection:'row', gap:'5px', alignItems:'center', paddingTop:'10px', paddingBottom:'10px', fontWeight:600}}>
                         <div style={{display:'flex', flexDirection:'row', gap:'2px', alignItems:'center'}}>
@@ -337,7 +337,7 @@ export const TokenDetails = () => {
             title: '协议',
             width:'60px',
             justifyContent:'center',
-            render:(record, index) =>{  
+            render:() =>{  
                 return (
                     <div style={{paddingTop:'10px', paddingBottom:'10px', fontWeight:600, alignItems:'center', display:'flex', flexDirection:'row', gap:'4px'}}>
                         V3
@@ -349,7 +349,7 @@ export const TokenDetails = () => {
             title: '费用等级',
             width:'100px',
             justifyContent:'right',
-            render:(record, index) =>{  
+            render:(record, _) =>{  
                 return (
                     <div style={{paddingTop:'10px', paddingBottom:'10px', fontWeight:600, alignItems:'center', display:'flex', flexDirection:'row', gap:'4px'}}>
                         {record.feeTier / 10000}%
@@ -360,7 +360,7 @@ export const TokenDetails = () => {
         {
             title: 'TVL',
             justifyContent:'right',
-            render:(record, index) =>{  
+            render:(record, _) =>{  
                 return (
                     <div style={{paddingTop:'10px', paddingBottom:'10px', fontWeight:600, alignItems:'center', display:'flex', flexDirection:'row', gap:'4px'}}>
                         US${formatCurrency(parseFloat(record.totalValueLockedUSD))}
@@ -375,7 +375,7 @@ export const TokenDetails = () => {
         {
             title: '交易量',
             justifyContent:'right',
-            render:(record, index) =>{  
+            render:(record, _) =>{  
                 return (
                     <div style={{paddingTop:'10px', paddingBottom:'10px', fontWeight:600, alignItems:'center', display:'flex', flexDirection:'row', gap:'4px'}}>
                         US${formatCurrency(parseFloat(record.volumeUSD))}
@@ -489,7 +489,7 @@ export const TokenDetails = () => {
                     <div style={{display:'flex', flexDirection:'column', gap:'5px'}}>
                         <MuMenu 
                             data={option_menus} 
-                            onItemSelected={(item)=>{}}
+                            onItemSelected={(_)=>{}}
                             styles={{
                                 MainMenuItemNormal:{fontSize:'16px', cursor:'pointer', color:'#c0c0c0', paddingLeft:'10px', paddingRight:'10px', paddingTop:'2px', paddingBottom:'2px'},
                                 MainMenuItemPreSelect:{fontSize:'16px', cursor:'pointer', color:'#f3f3f3', paddingLeft:'10px', paddingRight:'10px', paddingTop:'2px', paddingBottom:'2px'},

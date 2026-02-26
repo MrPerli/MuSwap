@@ -30,7 +30,7 @@ const priceAbi = [
 export const useChainLinkPrices = (tokens: TokenBalance[]) => {
     const [data, setData] = useState<TokenBalance[]>([])
     const [loading, setLoading] = useState<boolean>(false)
-    const [error, setError] = useState<Error | null>(null)
+    const [error, _] = useState<Error | null>(null)
     const account = useAccount()
 
     const names: string[] = useMemo(():string[]=>{
@@ -70,7 +70,7 @@ export const useChainLinkPrices = (tokens: TokenBalance[]) => {
         return newContracts
     },[addresses, account.chainId])
 
-    const {data: fetchedTokenPrices, isLoading: tokenPricesFetching, error: tokenPricesFetchError} = useReadContracts({
+    const {data: fetchedTokenPrices, error: tokenPricesFetchError} = useReadContracts({
         contracts: pricesContracts,
         query: {
             enabled: pricesContracts.length > 0
@@ -84,7 +84,7 @@ export const useChainLinkPrices = (tokens: TokenBalance[]) => {
                 let name = item.name
                 if(fetchedTokenPrices[index].result !== undefined){
                     if(typeof(fetchedTokenPrices[index].result) !== 'number'){
-                        const [roundId, answer, startedAt, updateAt, answeredInRound] = fetchedTokenPrices[index].result
+                        const [, answer, , updateAt,] = fetchedTokenPrices[index].result
                         prices.push({name, price:answer, updateAt}) 
                     }
                 }

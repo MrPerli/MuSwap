@@ -1,17 +1,16 @@
 import { CoinGeckoAPI, type CoinGeckoAPI_TokenIdAddress } from "@Mu/services/CoinGeckoService"
 import type { TokenInfo } from "@Mu/types/TokenTypes"
-import { useQueries } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 
 export const useCoinGeckoTokenIds = (tokens: TokenInfo[])=> {
     const [loading, setLoading] = useState<boolean>(true)
-    const [data, setData] = useState<CoinGeckoAPI_TokenIdAddress[]>([])
+    const [data, _] = useState<CoinGeckoAPI_TokenIdAddress[]>([])
 
     const getTokenIdAddress = async (addresses:string[]) => {
         const ret = await CoinGeckoAPI.getTokenIds(addresses)
         
         // 处理返回的数据
-        console.debug('')
+        console.debug(ret)
     }
 
     // const debug:boolean = false

@@ -8,7 +8,7 @@ import type {
     Pool, 
     PriceQuote, 
     TokenPrice, 
-    USDPriceData, 
+    //USDPriceData, 
     GetPricesVariables,
     GetPricesResp
 } from "../../types/Uniswap"
@@ -31,37 +31,37 @@ export const STABLE_COINS = [
 ]
 
 // 计算置信度公共函数(hook内部调用)
-function calculateConfidence(pool: Pool):number {
-    // 把总锁仓价值(USD价值)转换成数字
-    const totalValueLockedUSD: number = parseFloat(pool.totalValueLockedUSD)
-    // 把交易量转换成数字
-    const volumeUSD: number = parseFloat(pool.volumeUSD)
-    const feeTier: number = pool.feeTier
+// function calculateConfidence(pool: Pool):number {
+//     // 把总锁仓价值(USD价值)转换成数字
+//     const totalValueLockedUSD: number = parseFloat(pool.totalValueLockedUSD)
+//     // 把交易量转换成数字
+//     const volumeUSD: number = parseFloat(pool.volumeUSD)
+//     const feeTier: number = pool.feeTier
 
-    let confidence: number = 0
+//     let confidence: number = 0
 
-    // TVL权重计算,五个权重等级,根据TVL的数量,分为千,万,十万,百万,千万
-    // TVL权重占整个置信度的50%权重,分为5个等级
-    if (totalValueLockedUSD > 10000000) confidence += 0.5
-    else if (totalValueLockedUSD > 1000000) confidence += 0.4
-    else if (totalValueLockedUSD > 100000) confidence += 0.3
-    else if (totalValueLockedUSD > 10000) confidence += 0.2
-    else if (totalValueLockedUSD > 1000) confidence += 0.1
+//     // TVL权重计算,五个权重等级,根据TVL的数量,分为千,万,十万,百万,千万
+//     // TVL权重占整个置信度的50%权重,分为5个等级
+//     if (totalValueLockedUSD > 10000000) confidence += 0.5
+//     else if (totalValueLockedUSD > 1000000) confidence += 0.4
+//     else if (totalValueLockedUSD > 100000) confidence += 0.3
+//     else if (totalValueLockedUSD > 10000) confidence += 0.2
+//     else if (totalValueLockedUSD > 1000) confidence += 0.1
 
-    // volumeUSD权重计算
-    // volumeUSD占整个置信度的30%权重,分为3个等级
-    if(volumeUSD > 1000000) confidence += 0.3
-    else if(volumeUSD > 100000) confidence += 0.2
-    else if(volumeUSD > 10000) confidence += 0.1
+//     // volumeUSD权重计算
+//     // volumeUSD占整个置信度的30%权重,分为3个等级
+//     if(volumeUSD > 1000000) confidence += 0.3
+//     else if(volumeUSD > 100000) confidence += 0.2
+//     else if(volumeUSD > 10000) confidence += 0.1
 
-    // feeTier权重计算
-    // feeTier权重占整个置信度的20%权重
-    if(feeTier <= 100 ) confidence += 0.2
-    else if(feeTier <= 500 ) confidence += 0.15
-    else confidence += 0.1
+//     // feeTier权重计算
+//     // feeTier权重占整个置信度的20%权重
+//     if(feeTier <= 100 ) confidence += 0.2
+//     else if(feeTier <= 500 ) confidence += 0.15
+//     else confidence += 0.1
 
-    return Math.min(confidence, 1)
-}
+//     return Math.min(confidence, 1)
+// }
 
 // 查询一种代币对价格
 export const useTokenPrice = (
@@ -73,7 +73,7 @@ export const useTokenPrice = (
     }
 ) => {
     // 结构出可选项参数
-    const { enabled = true, maxFeeTier } = options || {};
+    const { maxFeeTier } = options || {};
 
     // 创建查询子图的hook并开始查询
     const {data,loading,error,} = useTheGraphQuery<GetPoolByTokensResp, GetPoolByTokensReqVariables>(
@@ -169,10 +169,10 @@ export const useTokenPrice = (
     }
 }
 
-// 查询TopPools
-export const useTopPools = (count: number = 10) => {
+// // 查询TopPools
+// export const useTopPools = (count: number = 10) => {
 
-}
+// }
 
 // 查询ETH以USDC计价的价格-用于查不到某个Token以USDC或者其他美元稳定币的计价时做中间计价
 export const useETHPrice = () => {
@@ -193,9 +193,9 @@ export const useTokenPriceInETH = (tokenAddress: `0x${string}`) => {
 }
 
 // 通过ETH间接计算美元价格
-async function calculateIndirectPrice(tokenAddress: `0x${string}`, ethPriceUSD: number): Promise<USDPriceData | null> {
-    return null
-}
+// async function calculateIndirectPrice(tokenAddress: `0x${string}`, ethPriceUSD: number): Promise<USDPriceData | null> {
+//     return null
+// }
 
 
 //======================================================下面是批量获取代币价格的方法======================================================
@@ -247,7 +247,7 @@ export const useBatchTokenPrice = (tokens: string[]) => {
     // 2.1 根据bestPoolIDs的变化开始查询各id对应池子的价格信息
     const [pageStartForFetchPrices, setPageStartForFetchPrices] = useState<number>(0)
     // 2.1.1 开始查询已有best pool的代币的价格
-    const {data:fetchedPrices, loading:pricesFetching, error:fetchPricesError,} = useTheGraphQuery<GetPricesResp, GetPricesVariables>(
+    const {data:fetchedPrices,} = useTheGraphQuery<GetPricesResp, GetPricesVariables>(
         GET_POOLS_BY_ID,
         {
             poolIDs: bestPoolIDs,
@@ -285,7 +285,7 @@ export const useBatchTokenPrice = (tokens: string[]) => {
     // 2.2 根据剩余未找到best pool的代币noBestPoolTokens查一次best pool
     const [pageStartForFetchBestPools, setPageStartForFetchBestPools] = useState<number>(0)
     // 2.2.1 开始查询noBestPoolTokens中所有代币的流动性池
-    const {data:fetchedBestPools, loading:bestPoolsFetching, error:fetchBestPoolsError,} = useTheGraphQuery<GetBestPoolsResp, GetBestPoolsVariables>(
+    const {data:fetchedBestPools, } = useTheGraphQuery<GetBestPoolsResp, GetBestPoolsVariables>(
         GET_BEST_POOLS,
         {
             queryTokens: noBestPoolTokens,

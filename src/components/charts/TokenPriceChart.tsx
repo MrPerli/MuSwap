@@ -1,15 +1,12 @@
 import { MuChart } from "@Mu/components/common/MuChart"
-import { useCoinGeckoHistoricalPrice } from "@Mu/hooks/coingecko/useCoinGeckoHistoricalPrice"
 import { useTokenHistoricalPrice } from "@Mu/hooks/uniswap/useTokenHistoricalPrice"
 import type { TokenInfoExpend, TokenInfo } from "@Mu/types/TokenTypes"
-import { formatCurrency, formatDate } from "@Mu/utils/Format"
-import type React from "react"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 
-interface TokenPriceForChart{
-    time:number,
-    price:number,
-}
+// interface TokenPriceForChart{
+//     time:number,
+//     price:number,
+// }
 
 export interface TokenPriceChartProps{
     tokenInfo:TokenInfo | undefined,

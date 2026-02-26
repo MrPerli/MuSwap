@@ -118,8 +118,8 @@ export const PersonalTokensView = () => {
     const {
         data:fetchedBalances, 
         loading:balancesFetching, 
-        error:balancesFetchError,
-        refetch:refetchBalance
+        //error:balancesFetchError,
+        //refetch:refetchBalance
     } = useTokensBalance(supportTokens, accountAddress as `0x${string}`)
 
     // 通过ChainLink获取素有代币的价格
@@ -166,13 +166,13 @@ export const PersonalTokensView = () => {
 
 
     // 计算总资产价值
-    const totalAssetValue = useMemo(() => {
-        let totalValue: number = 0
-        sortedPrices.forEach((price)=>{
-            totalValue += price.valueOf!
-        })
-        return totalValue
-    },[fetchedPrices])
+    // const totalAssetValue = useMemo(() => {
+    //     let totalValue: number = 0
+    //     sortedPrices.forEach((price)=>{
+    //         totalValue += price.valueOf!
+    //     })
+    //     return totalValue
+    // },[fetchedPrices])
 
 
     // onMuTableItemSelected

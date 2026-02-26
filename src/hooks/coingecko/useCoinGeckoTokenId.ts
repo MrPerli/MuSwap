@@ -1,6 +1,5 @@
 import { CoinGeckoAPI, type CoinGeckoAPI_TokenIdAddress } from "@Mu/services/CoinGeckoService"
 import { useQuery } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
 
 export const useCoinGeckoTokenId = (address:string)=> {
     // const [loading, setLoading] = useState<boolean>(true)

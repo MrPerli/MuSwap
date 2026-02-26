@@ -6,7 +6,7 @@ import { ETH } from "@Mu/config/Icons"
 import { useTransferRecord } from "@Mu/hooks/etherscan/useTransferRecord"
 import { useSwapRecord } from "@Mu/hooks/uniswap/useSwapRecord"
 import { useTokens } from "@Mu/hooks/useTokens"
-import { findToken, type TokenInfo } from "@Mu/types/TokenTypes"
+import { findToken } from "@Mu/types/TokenTypes"
 import type { TransactionAction, TransactionNode, TransactionType } from "@Mu/types/TransactionType"
 import { isVilidAddress } from "@Mu/utils/CommonUtils"
 import { formatCurrency, formatTimeForTX } from "@Mu/utils/Format"
@@ -49,7 +49,7 @@ export const PersonalTxRecordsView = ()=>{
         {
             title:'时间',
             justifyContent:'center',
-            render: (record,index)=>{
+            render: (record, _)=>{
                 return <div style={{...tableCommDivStyle}}>{formatTimeForTX(record.timestamp)}</div>
             },
             width:'120px'
@@ -58,7 +58,7 @@ export const PersonalTxRecordsView = ()=>{
             title:'类型',
             width:'200px',
             justifyContent:'center',
-            render: (record,index)=>{
+            render: (record, )=>{
                 let t:React.ReactNode = ''
                 switch (record.type) {
                     case 'tokenSwap':
@@ -96,7 +96,7 @@ export const PersonalTxRecordsView = ()=>{
         {
             title:'金额',
             width:'520px',
-            render: (record, index) => {
+            render: (record, _) => {
                 let token0 = record.txActions[0].token0
                 let amount0 = record.txActions[0].amount0
                 let token1 = record.txActions[0].token1
@@ -128,7 +128,7 @@ export const PersonalTxRecordsView = ()=>{
         },
         {
             title:'地址',
-            render: (record, index) => {
+            render: (record, _) => {
                 return (
                     <div style={{display:'flex', flexDirection:'row', justifyContent:'left', alignItems:'center', gap:'10px'}}>
                         <span style={{color:'gray'}}>

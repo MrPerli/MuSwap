@@ -1,7 +1,6 @@
 import { Avatar } from "antd"
 import { useTokens } from "@MuHooks/useTokens"
-import type { TokenBalance, TokenInfoExpend, TokenInfo } from "@MuTypes/TokenTypes"
-import { useCmcTokenPrices } from "@MuHooks/cmc/useCmcTokenPrices"
+import type { TokenInfoExpend, TokenInfo } from "@MuTypes/TokenTypes"
 import { formatCurrency } from "@Mu/utils/Format"
 import { CaretDownFilled, CaretUpFilled } from "@ant-design/icons"
 import MuTable, { type MuTableColumn } from "@Mu/components/common/MuTable"

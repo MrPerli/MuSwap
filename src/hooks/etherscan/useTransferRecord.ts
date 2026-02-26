@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 export const useTransferRecord = (account: string, timestamp: number, chainid:number, pageIndex:number = 1, pageSize:number = 20) => {
     const [data, setData] = useState<EtherScanTransfer[] | undefined>(undefined)
     const [loading, setLoading] = useState<boolean>(true)
-    const [error, setError] = useState<Error | null>(null)
+    const [error, _] = useState<Error | null>(null)
 
     // 获取区块号
     const queryBlockNumber = useQuery({

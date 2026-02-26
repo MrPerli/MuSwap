@@ -1,8 +1,7 @@
-import { ETH } from "@Mu/config/Icons"
 import { NATIVE_TOKEN, type TokenBalance, type TokenInfo } from "@Mu/types/TokenTypes"
 import { useEffect, useMemo, useState } from "react"
 import { erc20Abi} from "viem"
-import { useReadContracts, useBalance, useAccount } from "wagmi"
+import { useReadContracts, useBalance } from "wagmi"
 
 
 export const useTokensBalance = (
@@ -20,11 +19,11 @@ export const useTokensBalance = (
 
     const [tokensWithBalance, setTokensWithBalance] = useState<TokenBalance[]>([])
     const [loading, setLoading] = useState<boolean>(true)
-    const [fetchPercent, setFetchPercent] = useState<number>(0)
+    //const [fetchPercent, setFetchPercent] = useState<number>(0)
     const [error, setError] = useState<Error | null>(null)
     const [currBatchIndex, setCurrBatchIndex] = useState<number>(0)
     
-    const {data:nativeBalance, isLoading:nativeBalanceLoading, error:nativeBalanceError} = useBalance({address:accountAddress})
+    const {data:nativeBalance,} = useBalance({address:accountAddress})
 
     // 重新获取
     const refetch= () => {
@@ -149,7 +148,7 @@ export const useTokensBalance = (
     return {
         data,
         loading,
-        fetchPercent,
+        //fetchPercent,
         error,
         refetch
     }

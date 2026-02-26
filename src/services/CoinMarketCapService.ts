@@ -149,8 +149,8 @@ export const CMCAPI = {
         id:number, 
         vs_currency?:string, 
         duriation?: 'hour' | 'day' | 'week' | 'month' | 'year',
-        startTime?:number, 
-        endTime?:number,
+        // startTime?:number, 
+        // endTime?:number,
     ):Promise<CmcQuoteHistoricalResp | undefined> {
         try {
             let _count: number = 10

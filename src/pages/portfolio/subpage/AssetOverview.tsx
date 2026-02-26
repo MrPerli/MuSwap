@@ -3,10 +3,7 @@ import MuTable from "@Mu/components/common/MuTable"
 import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { isVilidAddress } from "@Mu/utils/CommonUtils"
-import MuLineChart from "@Mu/components/common/MuLineChart"
-import MuChartV2 from "@Mu/components/common/MuChartV2"
 import { MuChart } from "@Mu/components/common/MuChart"
-import MuChartV3 from "@Mu/components/common/MuChartV3"
 
 interface AssetHistorical{
     timestamp: number,
@@ -16,7 +13,7 @@ interface AssetHistorical{
 export const AssetOverview = ()=>{
     const {accountId} = useParams()
     const account = useAccount()
-    const [accountAddress, setAccountAddress] = useState<string>(``)
+    const [_, setAccountAddress] = useState<string>(``)
     const navigate = useNavigate()
     
     useEffect(()=>{

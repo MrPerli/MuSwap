@@ -4,7 +4,6 @@ import { useAccount } from 'wagmi'
 import styles from '../../assets/css/wallet/WalletConnect.module.css'
 import { WalletPanel } from './WalletPanel'
 import { useState } from 'react'
-import { formatAddress } from '../../utils/Format'
 import { TokenAddressShow } from '@Mu/components/token/TokenAddressShow'
 
 export const WalletConnect = ()=>{

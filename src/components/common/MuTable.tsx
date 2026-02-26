@@ -1,5 +1,5 @@
 import { Affix } from "antd"
-import React, { useCallback, useEffect, useMemo, useState, type MouseEventHandler } from "react"
+import React, { useCallback, useMemo } from "react"
 import '@Mu/assets/css/pages/MuTable.css'
 import { commBorder } from "@Mu/components/common/MuStyles"
 

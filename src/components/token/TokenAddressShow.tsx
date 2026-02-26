@@ -36,7 +36,7 @@ export const TokenAddressShow= (props: TokenAddressShowProps) => {
                 color:style !== undefined && style.color != undefined ? style.color : '',
                 fontSize:style !== undefined && style.fontSize != undefined ? style.fontSize : ''
             }}
-            onClick={(event)=>{
+            onClick={(_)=>{
                 if(!canCopy){
                     return
                 }

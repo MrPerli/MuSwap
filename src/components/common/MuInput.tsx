@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import type React from "react"
 
 export interface MuInputProps{
@@ -28,7 +28,7 @@ export const MuInput = ( props: MuInputProps) => {
 
     // 结构属性
     const {
-        status = 'normal', 
+        //status = 'normal', 
         type = 'all', 
         waterMark = '请输入', 
         style = style_base,
@@ -37,7 +37,7 @@ export const MuInput = ( props: MuInputProps) => {
     } = {...props}
 
     // 状态hooks
-    const [inputStyle, setInputStyle] = useState<React.CSSProperties>(()=>{
+    const [inputStyle, _] = useState<React.CSSProperties>(()=>{
         if(style.fontSize === undefined && style.height !== undefined){
             style.fontSize = style.height
         }
@@ -47,7 +47,7 @@ export const MuInput = ( props: MuInputProps) => {
         }
 
         return {...style_base, ...Object.fromEntries(
-                Object.entries(style).filter(([key, value])=> value !== undefined)
+                Object.entries(style).filter(([_, value])=> value !== undefined)
         )}
     })
 

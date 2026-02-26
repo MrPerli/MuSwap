@@ -10,7 +10,7 @@ type MuTimeType = 'hour' | 'day' | 'week' | 'month' | 'year';
 // 传入的时间单位必须是秒
 const getDataString = (time: number, type: MuTimeType): string => {
     let d: Date = new Date(time * 1000);
-    let year: number = d.getFullYear();
+    //let year: number = d.getFullYear();
     let month: number = d.getMonth() + 1;
     let day: number = d.getDate();
     let hour: number = d.getHours();
@@ -215,7 +215,7 @@ const YAxis = (props: MuYAxisProps): React.ReactNode => {
     const {
         style = defaultStyle,
         dataRange,
-        showIndicator,
+        //showIndicator,
         onSizeChange,
         onAxisCreated,
     } = { ...props };
@@ -274,8 +274,8 @@ const YAxis = (props: MuYAxisProps): React.ReactNode => {
     }, [innerDataRange]);
 
     const [items, setItems] = useState<MuAxisScaleDataType[]>([]);
-    const [realHighItem, setRealHighItem] = useState<MuAxisScaleDataType>({ point: { x: 0, y: 0 }, scaleData: 0 });
-    const [realLowItem, setRealLowItem] = useState<MuAxisScaleDataType>({ point: { x: 0, y: 0 }, scaleData: 0 });
+    // const [realHighItem, setRealHighItem] = useState<MuAxisScaleDataType>({ point: { x: 0, y: 0 }, scaleData: 0 });
+    // const [realLowItem, setRealLowItem] = useState<MuAxisScaleDataType>({ point: { x: 0, y: 0 }, scaleData: 0 });
     useEffect(() => {
         let _items: MuAxisScaleDataType[] = [];
         for (let i = ITEM_COUNT - 1; i >= 0; i--) {
@@ -299,23 +299,23 @@ const YAxis = (props: MuYAxisProps): React.ReactNode => {
             onAxisCreated(ret);
         }
 
-        let scaleMaxItem = _items[_items.length - 1];
-        let scaleMinItem = _items[0];
-        let pixsPerData = (scaleMaxItem.point.y - scaleMinItem.point.y) / (scaleMaxItem.scaleData - scaleMinItem.scaleData);
-        setRealHighItem({
-            point: {
-                x: ITEM_X,
-                y: scaleMinItem.point.y + (dataRange.max - scaleMinItem.scaleData) * pixsPerData,
-            },
-            scaleData: dataRange.max
-        });
-        setRealLowItem({
-            point: {
-                x: ITEM_X,
-                y: scaleMinItem.point.y + (dataRange.min - scaleMinItem.scaleData) * pixsPerData,
-            },
-            scaleData: dataRange.min
-        });
+        // let scaleMaxItem = _items[_items.length - 1];
+        // let scaleMinItem = _items[0];
+        //let pixsPerData = (scaleMaxItem.point.y - scaleMinItem.point.y) / (scaleMaxItem.scaleData - scaleMinItem.scaleData);
+        // setRealHighItem({
+        //     point: {
+        //         x: ITEM_X,
+        //         y: scaleMinItem.point.y + (dataRange.max - scaleMinItem.scaleData) * pixsPerData,
+        //     },
+        //     scaleData: dataRange.max
+        // });
+        // setRealLowItem({
+        //     point: {
+        //         x: ITEM_X,
+        //         y: scaleMinItem.point.y + (dataRange.min - scaleMinItem.scaleData) * pixsPerData,
+        //     },
+        //     scaleData: dataRange.min
+        // });
     }, [itemDataGap, innerDataRange]);
 
     useEffect(() => {
@@ -430,7 +430,7 @@ const FloatTip = <T,>(props: FloatTipProps<T>): React.ReactNode => {
     const closeText = useRef<SVGTextElement>(null);
 
     const [width, setWidth] = useState<number>(0);
-    const [height, setHeight] = useState<number>(73);
+    const height = 73;
     useEffect(() => {
         if (highText.current && lowText.current && openText.current && closeText.current) {
             let _width = highText.current.getBBox().width;
@@ -780,7 +780,7 @@ const KChart = <T,>(props: KChartProps<T>): React.ReactNode => {
             srcData: data[0]
         };
 
-        data.forEach((dataItem, index) => {
+        data.forEach((dataItem, _) => {
             let xData = getX(dataItem);
             let yHigh = getHigh(dataItem);
             let yLow = getLow(dataItem);
@@ -838,16 +838,16 @@ const KChart = <T,>(props: KChartProps<T>): React.ReactNode => {
         setTipPos({ x: event.nativeEvent.offsetX, y: event.nativeEvent.offsetY });
     };
 
-    const indicatorHigh = useRef<SVGTextElement>(null);
-    const indicatorLow = useRef<SVGTextElement>(null);
-    const [indicatorHighWidth, setIndicatorHighWidth] = useState<number>(0);
-    const [indicatorLowWidth, setIndicatorLowWidth] = useState<number>(0);
-    useEffect(() => {
-        if (indicatorHigh.current && indicatorLow.current) {
-            setIndicatorHighWidth(indicatorHigh.current.getBBox().width);
-            setIndicatorLowWidth(indicatorLow.current.getBBox().width);
-        }
-    }, []);
+    // const indicatorHigh = useRef<SVGTextElement>(null);
+    // const indicatorLow = useRef<SVGTextElement>(null);
+    // const [indicatorHighWidth, setIndicatorHighWidth] = useState<number>(0);
+    // const [indicatorLowWidth, setIndicatorLowWidth] = useState<number>(0);
+    // useEffect(() => {
+    //     if (indicatorHigh.current && indicatorLow.current) {
+    //         setIndicatorHighWidth(indicatorHigh.current.getBBox().width);
+    //         setIndicatorLowWidth(indicatorLow.current.getBBox().width);
+    //     }
+    // }, []);
 
     return (
         <svg width={width} height={height} style={{ background: '#00000000' }} onMouseEnter={onMouseEnter} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave}>

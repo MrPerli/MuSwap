@@ -23,7 +23,7 @@ export const useTokenBalance = (account: string, tokenAddress: string, chainId: 
     // 查询原生代币余额
     const {
         data: nativeBalance,
-        isLoading: fetchingNativeBalance,
+        //isLoading: fetchingNativeBalance,
         error: fetchNativeBalanceError,
         refetch: refetchNativeBalance,
     } = useBalance({
@@ -37,7 +37,7 @@ export const useTokenBalance = (account: string, tokenAddress: string, chainId: 
     // 查询代币合约,获取代币的精度
     const {
         data: decimals,
-        isLoading: fetchingDecimals,
+        //isLoading: fetchingDecimals,
         error: fetchDecimalsError,
         refetch: refetchDecimals,
     } = useReadContract({
@@ -54,7 +54,7 @@ export const useTokenBalance = (account: string, tokenAddress: string, chainId: 
     // 查询代币合约,获取余额数据
     const {
         data: balance,
-        isLoading: fetchBalance,
+        isLoading: _,
         error: fetchingBalanceError,
         refetch: refetchBalance,
     } = useReadContract({

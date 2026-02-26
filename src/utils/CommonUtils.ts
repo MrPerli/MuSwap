@@ -1,5 +1,3 @@
-import { message } from "antd"
-
 // 处理钱包地址复制
 export const copyToClipboard = (content: string | `0x${string}` | undefined):boolean => {
     if (content) {
