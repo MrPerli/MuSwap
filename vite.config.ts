@@ -1,12 +1,27 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 // https://vite.dev/config/
 export default defineConfig({
+  plugins: [
+    react(),
+    nodePolyfills({
+      // 是否包含 node 内置模块的 polyfill
+      include: ['stream', 'crypto', 'util', 'buffer', 'process', 'vm'],
+      // 是否需要全局变量，比如 Buffer, process
+      globals: {
+        Buffer: true,
+        global: true,
+        process: true,
+      },
+    }),
+  ],
   define: {
-    'process.env': {}, // 解决 process.env 相关的报错
+    'global': {},
+    'process.env': {}, // 有些库需要 process.env
+    'Buffer': ['buffer', 'Buffer'],
   },
-  plugins: react(),
   resolve: {
     alias: {
       '@Mu': '/src',
