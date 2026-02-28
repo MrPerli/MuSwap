@@ -1,6 +1,7 @@
 import { ArrowDownOutlined } from "@ant-design/icons"
 import { flexColumnStyle } from "@Mu/components/common/MuStyles"
 import { TokenOperator } from "@Mu/components/transaction/TokenOperator"
+import { useSwapQuoteByManual } from "@Mu/hooks/uniswap/useSwapQuoteByManual"
 import type { TokenInfo } from "@Mu/types/TokenTypes"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -9,7 +10,7 @@ import { useNavigate } from "react-router-dom"
 interface  ExchangeModuleProps{
     defaultSaleToken: TokenInfo
     defaultBuyToken: TokenInfo
-    currentToken?: TokenInfo // 当前正在操作的Token,选传,用于在查看代币详情时
+    currentToken?: TokenInfo // 当前正在操作的Token,选传,用于代币详情页面的交易操作
     style?: React.CSSProperties
 }
 export const ExchangeModule = (props: ExchangeModuleProps) => {
@@ -36,6 +37,7 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
         }
         setBuyToken(defaultBuyToken)
     },[defaultBuyToken])
+
     
     // 检查当前代币是否改变
     const checkCurrentTokenChange = (token:TokenInfo) => {
@@ -74,11 +76,93 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
         }
     }
 
+    
+    // 出售数额
+    const [saleAmount, setSaleAmount] = useState<number>(0)
+    // 买入数额
+    const [buyAmount, setBuyAmount] = useState<number>(0)
+    // 待报价的出售代币数量,当出售数额改变时更新这个状态,用来触发报价的更新
+    const [quoteSaleAmount, setQuoteSaleAmount] = useState<number>(0)
+    // 待报价的购买代币数量,d当购买数额改变时更新这个状态,用来触发报价的更新
+    const [quoteBuyAmount, setQuoteBuyAmount] = useState<number>(0)
+    // 错误信息
+    const [errorMsg, setErrorMsg] = useState<string>('')
+
+    //获取购买到出售的报价
+    const buyToSaleQuote = useSwapQuoteByManual(
+        buyToken,
+        saleToken,
+        quoteBuyAmount,
+        3000,
+        true,
+    )
+    // const buyToSaleQuote = useSwapQuoteBySmartRouter(
+    //     buyToken,
+    //     saleToken,
+    //     quoteBuyAmount,
+    //     //3000,
+    //     true,
+    // )
+    useEffect(()=>{
+        if(buyToSaleQuote.quote === null){
+            return
+        }
+        const quoteNum = Number(buyToSaleQuote.quote)
+        setSaleAmount(quoteNum)
+    }, [buyToSaleQuote.quote])
+
+    // 获取出售到购买的报价
+    const saleToBuyQuote = useSwapQuoteByManual(
+        saleToken,
+        buyToken,
+        quoteSaleAmount,
+        3000,
+        true,
+    ) 
+    // const saleToBuyQuote = useSwapQuoteBySmartRouter(
+    //     saleToken,
+    //     buyToken,
+    //     quoteSaleAmount,
+    //     //3000,
+    //     true,
+    // ) 
+    useEffect(()=>{
+        if(saleToBuyQuote.quote === null){
+            return
+        }
+        const quoteNum = Number(saleToBuyQuote.quote)
+        setBuyAmount(quoteNum)
+    }, [saleToBuyQuote.quote])
+
+    // 出售数额改变事件回调函数
+    const onSaleAmountChanged = async (amount: number) => {
+        setSaleAmount(amount)
+        setQuoteSaleAmount(amount)
+    }
+    // 买入数额改变事件回调函数
+    const onBuyAmountChanged = (amount: number) => {
+        setBuyAmount(amount)
+        setQuoteBuyAmount(amount)
+    }
+
     // 当切换出售和购买时
     const onExchangeSaleBuyBTNClick = () => {
         const temp = saleToken
         setSaleToken(buyToken)
         setBuyToken(temp)
+        setBuyAmount(0)
+        setSaleAmount(0)
+        setQuoteBuyAmount(0)
+        setQuoteSaleAmount(0)
+    }
+
+    const onSubmit = () => {
+        console.log('提交交易', {
+            saleToken,
+            saleAmount,
+            buyToken,
+            buyAmount,
+        })
     }
 
     return (
@@ -87,7 +171,10 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
             <TokenOperator 
                 type={'sale'} 
                 defaultToken={saleToken}
+                defaultAmount={saleAmount}
                 onTokenChanged={onSaleTokenChanged}
+                onAmountChanged={onSaleAmountChanged}
+                onError={(msg)=>{setErrorMsg(msg)}}
             />
             {/* 切换按钮 */}
             <div 
@@ -121,7 +208,9 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
             <TokenOperator 
                 type={'buy'} 
                 defaultToken={buyToken}
+                defaultAmount={buyAmount}
                 onTokenChanged={onBuyTokenChanged}
+                onAmountChanged={onBuyAmountChanged}
             />
             {/* 提交按钮 */}
             <div 
@@ -134,10 +223,19 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
                     justifyContent:'center', 
                     alignItems:'center', 
                     cursor:'pointer',
+                    fontWeight:800,
+                    fontSize:20,
                     userSelect:'none',
                 }}
+                onClick={onSubmit}
             >
-                    提交
+                    {
+                        saleToBuyQuote.isLoading || buyToSaleQuote.isLoading ? 
+                        '报价中···' : 
+                        errorMsg === ''? 
+                        '提交':
+                        errorMsg
+                        }
             </div>
         </div>
     )

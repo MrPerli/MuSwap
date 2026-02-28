@@ -28,7 +28,7 @@ export const MuInput = ( props: MuInputProps) => {
 
     // 结构属性
     const {
-        //status = 'normal', 
+        status = 'normal', 
         type = 'all', 
         waterMark = '请输入', 
         style = style_base,
@@ -64,9 +64,27 @@ export const MuInput = ( props: MuInputProps) => {
         setValue(defaultValue)
     },[defaultValue])
 
-    const containerRef = useRef<HTMLDivElement>(null);
-    
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    // 定时器引用
+    const timerRef = useRef<NodeJS.Timeout | null>(null)
+    useEffect(() => {
+        return () => {
+            if (timerRef.current) {
+                // 组件卸载时清除定时器
+                clearTimeout(timerRef.current)
+            }
+        }
+    }, [])
+
     const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        // 每次输入先清除之前的定时器
+        const delayTime = 300
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+
         // 获取输入的值
         let newValue = event.target.value;
         
@@ -74,14 +92,21 @@ export const MuInput = ( props: MuInputProps) => {
             // 处理退格到空的情况
             // 这里要用useRef处理,否则无法改变光标位置
             setValue('')
-            onTextChange !== undefined ? onTextChange(''):null
+            // 通知外部(延迟处理)
+            timerRef.current = setTimeout(() => {
+                onTextChange?.('');
+            }, delayTime);
         }else if(newValue === '.' || newValue === '。'){
             if(type === 'number'){
                 setValue('0.')
-                onTextChange !== undefined ? onTextChange('0.'):null
+                timerRef.current = setTimeout(() => {
+                    onTextChange?.('0.');
+                }, delayTime);
             }else{
                 setValue(newValue)
-                onTextChange !== undefined ? onTextChange(newValue):null
+                timerRef.current = setTimeout(() => {
+                    onTextChange?.(newValue);
+                }, delayTime);
             }
         } else {
             // 正则,控制输入内容为正数(整数和小数)
@@ -91,7 +116,10 @@ export const MuInput = ( props: MuInputProps) => {
                 return
             }
             setValue(newValue)
-            onTextChange !== undefined ? onTextChange(newValue):null
+            // 通知外部(延迟处理)
+            timerRef.current = setTimeout(() => {
+                onTextChange?.(newValue);
+            }, delayTime)
         }
     }
 
@@ -125,6 +153,7 @@ export const MuInput = ( props: MuInputProps) => {
                     marginTop:marginTop,
                     width:containerRef?.current?.offsetWidth,
                     background:'#00000000',
+                    color: status === 'error' ? '#ff7777' : 'white'
                 }}
             />
         </div>

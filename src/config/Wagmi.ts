@@ -4,6 +4,7 @@ import {mainnet, sepolia, polygon, arbitrum} from 'wagmi/chains'
 
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 
+export const ETH_MAIN_RPC_URL = 'https://mainnet.infura.io/v3/b7c09986e3534012b4760a8ee64a214d'
 // export const client = new QueryClient({
 //     defaultOptions: {
 //         queries: {
@@ -14,11 +15,11 @@ import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 // })
 export const client = new QueryClient()
 export const wagmi_config = getDefaultConfig({
-    appName:'MyUniswap',
+    appName:'MuSwap',
     projectId:'04b9175f68477ba3e2d97ad9fd7edb94',
     chains: [mainnet, sepolia, polygon, arbitrum],
     transports: {
-        [mainnet.id]:http('https://mainnet.infura.io/v3/b7c09986e3534012b4760a8ee64a214d'),
+        [mainnet.id]:http(ETH_MAIN_RPC_URL),
         //[mainnet.id]:http(),
         [sepolia.id]:http(),
         [polygon.id]:http(),

@@ -15,6 +15,7 @@ export interface TokenOperatorProps{
     defaultAmount?: number // 默认数额,选传
     onTokenChanged?:(token:TokenInfo) => void
     onAmountChanged?:(amount:number) => void
+    onError?:(errMsg:string) => void
 }
 
 export  const TokenOperator = (props: TokenOperatorProps) => {
@@ -24,7 +25,9 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
         defaultToken,
         onTokenChanged,
         onAmountChanged,
+        onError,
     } = {...props}
+    
 
     // 内部Token状态,用于控制当前选中的代币,内部均使用这个状态
     const [innerToken, setInnerToken] = useState<TokenInfo | undefined>(defaultToken)
@@ -32,8 +35,6 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
         setInnerToken(defaultToken)
     }, [defaultToken])
 
-    // 页面跳转hook,用来切换当前代币后自动跳转到对应代币的详情页
-    //const navigate = useNavigate()
 
     // 获取当前账户地址,用来获取当前账户的代币余额等信息
     const account = useAccount() 
@@ -61,11 +62,32 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
     // 数额
     const [amount, setAmount] = useState<string>('')
     useEffect(()=>{
+        if(props.defaultAmount === undefined){
+            return
+        }
+        // 外部改变数值
+        setAmount(props.defaultAmount.toString())
+    }, [props.defaultAmount])
+
+    useEffect(()=>{
         setAmount('')
+        // 通知外部
+        if(onAmountChanged){
+            onAmountChanged(0)
+        }
+
+        // 获取一次价格
+        // 获取一次最新代币状态
+        refetchTokenStatus()
     }, [innerToken])
     const fastFillAmount = (amountPersent: number) => {
         let fllAmount = balance * amountPersent
         setAmount(fllAmount.toString())
+        
+        // 通知外部
+        if(onAmountChanged){
+            onAmountChanged(fllAmount)
+        }
     }
 
     // 获取ETH/USD价格
@@ -88,11 +110,33 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
         }
     }, [amount, ethPrice, tokenStatus])
 
+    // 当数额变动，检查是否错误
+    useEffect(()=>{
+        if(type === 'sale'){
+            if(Number(amount) > balance){
+                // 通知外部错误
+                onError !== undefined ? onError(`${innerToken?.symbol}余额不足`) : null
+                // 改变输入框状态
+                setInputStatus('error')
+            }
+            else{
+                // 通知外部清除错误
+                onError !== undefined ? onError('') : null
+                // 改变输入框状态
+                setInputStatus('normal')
+            }
+        }
+    },[amount])
 
+
+    const [inputStatus, setInputStatus] = useState<'normal' | 'error'>('normal')
     // 组件内部的输入框组件的输入事件回调函数
     const onMuInputTextChanged = (value:string) => {
         // 字符串转换成数字处理
-        let v:number = parseFloat(value)
+        let v:number = 0
+        if(value !== ''){
+            v = parseFloat(value)
+        }
 
         // 设置数额状态
         setAmount(value)
@@ -120,7 +164,7 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
     return (
         <div style={{display:'flex', flexDirection:'column', border:commBorder, borderRadius:'16px', background:'#131313', padding:'10px', paddingBottom:'18px', gap:'10px'}}>
             <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
-                {type === 'sale'? <span style={{color:'#e12905'}}>出售</span> : <span style={{color:'#05e17e'}}>购买</span>}
+                {type === 'sale'? <span style={{color:'#a0a0a0'}}>出售</span> : <span style={{color:'#a0a0a0'}}>购买</span>}
                 {
                     // 出售数额快速按钮
                     type === 'sale'?
@@ -168,6 +212,7 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
                 <MuInput 
                     style={{width:'60%', fontSize:'36px'}} 
                     type='number' 
+                    status={inputStatus}
                     waterMark="0" 
                     defaultValue={amount}
                     onTextChange={onMuInputTextChanged}
@@ -179,12 +224,21 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
             </div>
             <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
                 {/* 根据实时价格计算其想对于法币的价值 */}
-                <div>US${formatCurrency(tokenValue)}</div>
+                <div style={{display:'flex', flexDirection:'row', gap:'10px', alignItems:'center'}}>
+                    US${formatCurrency(tokenValue)} 
+                    <span style={{color:'#3d3d3d', fontSize:12, fontWeight:600}}>
+                        价格:US$
+                        {
+                            formatCurrency(innerToken?.symbol === 'ETH' ? (ethPrice ?? 0) :
+                            (tokenStatus?.derivedETH ? Number(tokenStatus.derivedETH) * (ethPrice ?? 0) : 0))
+                        }
+                    </span>
+                </div>
                 {/* 获取当前账户的选中的代币的余额 */}
                 {
                     // 只有出售代币才需要显示余额
                     type === 'sale' ?
-                    <div>{formatCurrency(balance)}{' '}{innerToken?.symbol}</div>
+                    <div style={{color:inputStatus === 'normal' ? 'white': '#ff7777'}}>{formatCurrency(balance)}{' '}{innerToken?.symbol}</div>
                     :
                     <div></div>
                 }
