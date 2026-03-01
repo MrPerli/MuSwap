@@ -1,4 +1,4 @@
-import { Token, CurrencyAmount, TradeType, Percent, ChainId, WETH9 } from '@uniswap/sdk-core'
+import { Token, CurrencyAmount, TradeType, Percent, WETH9 } from '@uniswap/sdk-core'
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
 import { type Address, formatUnits } from 'viem'
