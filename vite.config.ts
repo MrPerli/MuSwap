@@ -7,20 +7,19 @@ export default defineConfig({
   plugins: [
     react(),
     nodePolyfills({
-      // 是否包含 node 内置模块的 polyfill
-      include: ['stream', 'crypto', 'util', 'buffer', 'process', 'vm'],
-      // 是否需要全局变量，比如 Buffer, process
+      // 是否全局注入 Buffer、process 等
       globals: {
         Buffer: true,
-        global: true,
         process: true,
       },
+      // 需要 polyfill 的 Node.js 核心模块
+      protocolImports: true,
     }),
   ],
   define: {
-    'global': {},
+    ///'global': {},
     'process.env': {}, // 有些库需要 process.env
-    'Buffer': ['buffer', 'Buffer'],
+    //'Buffer': ['buffer', 'Buffer'],
   },
   resolve: {
     alias: {

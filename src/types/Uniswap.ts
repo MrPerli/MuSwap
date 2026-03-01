@@ -1,4 +1,4 @@
-// Token
+// Token --Uniswap TheGraph V3
 export interface Token {
   id: string
   symbol: string
@@ -6,7 +6,7 @@ export interface Token {
   decimals: number
 }
 
-// Pool
+// Pool --Uniswap TheGraph V3
 export interface Pool {
     id: string
     token0: Token
@@ -26,7 +26,7 @@ export interface Pool {
     createdAtTimestamp: string // 池创建时间
 }
 
-// 代币价格
+// TokenPrice  --Uniswap TheGraph V3
 export interface TokenPrice {
   token0Price: number
   token1Price: number
@@ -36,7 +36,7 @@ export interface TokenPrice {
   poolId: string
 }
 
-// 报价
+// PriceQuote --Uniswap TheGraph V3
 export interface PriceQuote {
   fromToken: Token;
   toToken: Token;
@@ -45,6 +45,7 @@ export interface PriceQuote {
   pool: Pool;
 }
 
+// USDPriceData --Uniswap TheGraph V3
 export interface USDPriceData {
     priceUSD: number // 1 token = X USD
     priceInverseUSD: number // 1 USD = X token
@@ -159,6 +160,7 @@ export interface GetTokenStatusVariables {
   tokenAddress: string;
 }
 
+// 获取代币信息,包括其对ETH的实时价格
 export interface TokenStatus {
   id: string;
   symbol: string;
@@ -174,3 +176,5 @@ export interface TokenStatus {
 export interface GetTokenStatusResponse {
   token: TokenStatus;
 }
+
+//------- 以下是调用uniswap API的相关类型定义

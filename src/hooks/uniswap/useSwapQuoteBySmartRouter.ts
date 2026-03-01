@@ -1,10 +1,10 @@
-import { Token, CurrencyAmount, TradeType, Percent } from '@uniswap/sdk-core'
+import { Token, CurrencyAmount, TradeType, Percent, ChainId, WETH9 } from '@uniswap/sdk-core'
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
 import { type Address, formatUnits } from 'viem'
-import type { TokenInfo } from '@Mu/types/TokenTypes'
+import { ETHMAIN_NATIVE_TOKEN_ID, type TokenInfo } from '@Mu/types/TokenTypes'
 import { ETH_MAIN_RPC_URL } from '@Mu/config/Wagmi'
-import { AlphaRouter, ChainId, SwapType, type SwapOptionsSwapRouter02, type SwapRoute } from '@uniswap/smart-order-router'
+import { AlphaRouter, SwapType, type SwapOptionsSwapRouter02, type SwapRoute } from '@uniswap/smart-order-router'
 import { useAccount } from 'wagmi'
 import JSBI from 'jsbi'
 
@@ -44,10 +44,11 @@ export function toReadableAmount(rawAmount: number, decimals: number): string {
 }
 
 export function useSwapQuoteBySmartRouter(
-    tokenIn: TokenInfo,      
-    tokenOut: TokenInfo,    
-    amountIn: number,          
-    enabled?: boolean,
+    tokenSale: TokenInfo,    // 要出售的代币  
+    tokenBuy: TokenInfo,    // 要购买的代币
+    amount: number,         // 交易数量,根据type字段会拍段是购买的代币数量还是出售的代币数量
+    type?: TradeType,        // 交易类型,不传默认是EXACT_INPUT, EXACT_INPUT表示要出售确定数量的A代币,精确计算可以获得多少B代币,EXACT_OUTPUT表示要购买确定数量的B代币,需要支付多少数量的A代币
+    enabled?: boolean,      // 控制hook是否可用,不传默认是true
 ): SwapQuoteResult {
     const account = useAccount()
     const [quote, setQuote] = useState<string | null>(null);
@@ -55,12 +56,16 @@ export function useSwapQuoteBySmartRouter(
     const [route, setRoute] = useState<SwapRoute | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
+    // 默认不传则为true
+    enabled = enabled === undefined? true : enabled
+    // 默认不传则为EXACT_INPUT
+    type = type === undefined? TradeType.EXACT_INPUT : type
 
     useEffect(() => {
         // 如果未启用或缺少必要参数，跳过查询
-        if (!enabled || Number(amountIn) <= 0 || !tokenIn || !tokenOut || account.address === undefined) {
-            setQuote(null)
-            setQuoteRaw(null)
+        if (!enabled || Number(amount) <= 0 || !tokenSale || !tokenBuy || account.address === undefined) {
+            setQuote('0')
+            setQuoteRaw(0n)
             setRoute(null)
             setIsLoading(false)
             setError(null)
@@ -77,7 +82,7 @@ export function useSwapQuoteBySmartRouter(
         const fetchQuote = async () => {
             try {
                 // 设置当前区块链ID
-                const chainId = ChainId.MAINNET
+                const chainId = 1
                 // 创建一个区块链网络提供商
                 const provider = new ethers.providers.JsonRpcProvider(ETH_MAIN_RPC_URL)
                 // 初始化 AlphaRouter
@@ -94,48 +99,51 @@ export function useSwapQuoteBySmartRouter(
                     type: SwapType.SWAP_ROUTER_02,
                 }
 
+                // 根据type来判断,确定数量的代币是购买的代币,还是出售的代币
+                let srcToken = type === TradeType.EXACT_INPUT ? tokenSale : tokenBuy
+                let quoteToken = type === TradeType.EXACT_INPUT ? tokenBuy : tokenSale;
                 // 构建代币对象
-                const _tokenIn = new Token(
+                const _srcToken = new Token(
                     chainId,
-                    tokenIn.id as Address,
-                    tokenIn.decimals,
-                    tokenIn.symbol,
-                    tokenIn.name,
+                    srcToken.id === ETHMAIN_NATIVE_TOKEN_ID? WETH9[1].address : srcToken.id as Address,
+                    srcToken.decimals,
+                    srcToken.symbol,
+                    srcToken.name,
                 )
-                const _tokenOut = new Token(
+                const _quoteToken = new Token(
                     chainId,
-                    tokenOut.id as Address,
-                    tokenOut.decimals,
-                    tokenOut.symbol,
-                    tokenOut.name,
+                    quoteToken.id === ETHMAIN_NATIVE_TOKEN_ID? WETH9[1].address : quoteToken.id as Address,
+                    quoteToken.decimals,
+                    quoteToken.symbol,
+                    quoteToken.name,
                 )
 
 
-                const rawTokenAmountIn: JSBI = fromReadableAmount(
-                    amountIn,
-                    _tokenIn.decimals
+                const rawTokenAmount: JSBI = fromReadableAmount(
+                    amount,
+                    _srcToken.decimals
                 )
 
                 // 获取报价
                 const routeResult = await router.route(
                     CurrencyAmount.fromRawAmount(
-                        _tokenIn,
-                        rawTokenAmountIn
+                        _srcToken,
+                        rawTokenAmount
                     ),
-                    _tokenOut,
-                    TradeType.EXACT_INPUT,
+                    _quoteToken,
+                    type,
                     swapOptions
                 )
 
                 if (!routeResult) {
-                    throw new Error('未找到可行交易路径');
+                    throw new Error(`router.route error: no swap router`);
                 }
 
-                // 处理结果
+                // 处理结果,根据TradeType要区分代币
                 const expectedOutRaw = routeResult.quote.quotient; // JSBI 类型
                 const expectedOutFormatted = formatUnits(
                     BigInt(expectedOutRaw.toString()),
-                    _tokenOut.decimals
+                    _quoteToken.decimals,
                 )
 
                 if (isMounted) {
@@ -144,6 +152,7 @@ export function useSwapQuoteBySmartRouter(
                     setRoute(routeResult);
                 }
             } catch (err) {
+                console.error(String(err))
                 if (isMounted) {
                     setError(err instanceof Error ? err : new Error(String(err)));
                 }
@@ -160,7 +169,7 @@ export function useSwapQuoteBySmartRouter(
             // 卸载组件时改变挂载状态为false
             isMounted = false
         };
-    }, [ enabled, amountIn, tokenIn, tokenOut,]);
+    }, [ enabled, amount, tokenSale, tokenBuy,]);
 
     return { quote, quoteRaw, route, isLoading, error };
 }

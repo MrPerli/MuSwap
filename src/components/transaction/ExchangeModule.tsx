@@ -1,8 +1,10 @@
 import { ArrowDownOutlined } from "@ant-design/icons"
 import { flexColumnStyle } from "@Mu/components/common/MuStyles"
 import { TokenOperator } from "@Mu/components/transaction/TokenOperator"
-import { useSwapQuoteByManual } from "@Mu/hooks/uniswap/useSwapQuoteByManual"
+//import { useSwapQuoteByManual } from "@Mu/hooks/uniswap/useSwapQuoteByManual"
+import { useSwapQuoteBySmartRouter } from "@Mu/hooks/uniswap/useSwapQuoteBySmartRouter"
 import type { TokenInfo } from "@Mu/types/TokenTypes"
+import { TradeType } from "@uniswap/sdk-core"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -13,6 +15,7 @@ interface  ExchangeModuleProps{
     currentToken?: TokenInfo // 当前正在操作的Token,选传,用于代币详情页面的交易操作
     style?: React.CSSProperties
 }
+
 export const ExchangeModule = (props: ExchangeModuleProps) => {
     const {
         defaultSaleToken,
@@ -82,67 +85,39 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
     // 买入数额
     const [buyAmount, setBuyAmount] = useState<number>(0)
     // 待报价的出售代币数量,当出售数额改变时更新这个状态,用来触发报价的更新
-    const [quoteSaleAmount, setQuoteSaleAmount] = useState<number>(0)
+    const [tradeType, setSwapQuoteType] = useState<TradeType | undefined>(undefined)
     // 待报价的购买代币数量,d当购买数额改变时更新这个状态,用来触发报价的更新
-    const [quoteBuyAmount, setQuoteBuyAmount] = useState<number>(0)
+    const [quoteAmount, setQuoteAmount] = useState<number>(0)
     // 错误信息
     const [errorMsg, setErrorMsg] = useState<string>('')
 
-    //获取购买到出售的报价
-    const buyToSaleQuote = useSwapQuoteByManual(
-        buyToken,
-        saleToken,
-        quoteBuyAmount,
-        3000,
-        true,
-    )
-    // const buyToSaleQuote = useSwapQuoteBySmartRouter(
-    //     buyToken,
-    //     saleToken,
-    //     quoteBuyAmount,
-    //     //3000,
-    //     true,
-    // )
-    useEffect(()=>{
-        if(buyToSaleQuote.quote === null){
-            return
-        }
-        const quoteNum = Number(buyToSaleQuote.quote)
-        setSaleAmount(quoteNum)
-    }, [buyToSaleQuote.quote])
-
-    // 获取出售到购买的报价
-    const saleToBuyQuote = useSwapQuoteByManual(
+    // 处理预交易,包括报价
+    const swapQuote = useSwapQuoteBySmartRouter(
         saleToken,
         buyToken,
-        quoteSaleAmount,
-        3000,
-        true,
+        quoteAmount,
+        tradeType,
+        //3000,
     ) 
-    // const saleToBuyQuote = useSwapQuoteBySmartRouter(
-    //     saleToken,
-    //     buyToken,
-    //     quoteSaleAmount,
-    //     //3000,
-    //     true,
-    // ) 
     useEffect(()=>{
-        if(saleToBuyQuote.quote === null){
+        if(swapQuote.quote === null){
             return
         }
-        const quoteNum = Number(saleToBuyQuote.quote)
-        setBuyAmount(quoteNum)
-    }, [saleToBuyQuote.quote])
+        const quoteNum = Number(swapQuote.quote)
+        tradeType === TradeType.EXACT_INPUT ? setBuyAmount(quoteNum) : setSaleAmount(quoteNum)
+    }, [swapQuote.quote])
 
     // 出售数额改变事件回调函数
     const onSaleAmountChanged = async (amount: number) => {
         setSaleAmount(amount)
-        setQuoteSaleAmount(amount)
+        setQuoteAmount(amount)
+        setSwapQuoteType(TradeType.EXACT_INPUT)
     }
     // 买入数额改变事件回调函数
     const onBuyAmountChanged = (amount: number) => {
         setBuyAmount(amount)
-        setQuoteBuyAmount(amount)
+        setQuoteAmount(amount)
+        setSwapQuoteType(TradeType.EXACT_OUTPUT)
     }
 
     // 当切换出售和购买时
@@ -152,8 +127,7 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
         setBuyToken(temp)
         setBuyAmount(0)
         setSaleAmount(0)
-        setQuoteBuyAmount(0)
-        setQuoteSaleAmount(0)
+        setQuoteAmount(0)
     }
 
     const onSubmit = () => {
@@ -230,9 +204,9 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
                 onClick={onSubmit}
             >
                     {
-                        saleToBuyQuote.isLoading || buyToSaleQuote.isLoading ? 
+                        swapQuote.isLoading ? 
                         '报价中···' : 
-                        errorMsg === ''? 
+                        errorMsg === '' ? 
                         '提交':
                         errorMsg
                         }

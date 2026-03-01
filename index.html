@@ -10,4 +10,8 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
+  <!--add globalThis.Browser解决@uniswap/smart-order-router报错Browser未定义的问题,但后续还是会报错,暂时放弃-->
+  <!-- <script>
+    globalThis.Browser = { T: () => {} }; 
+  </script> -->
 </html>
