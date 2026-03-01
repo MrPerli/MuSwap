@@ -5,6 +5,7 @@ import { TokenOperator } from "@Mu/components/transaction/TokenOperator"
 import { useSwapQuoteBySmartRouter } from "@Mu/hooks/uniswap/useSwapQuoteBySmartRouter"
 import type { TokenInfo } from "@Mu/types/TokenTypes"
 import { TradeType } from "@uniswap/sdk-core"
+import { Spin } from "antd"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -139,6 +140,9 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
         })
     }
 
+    const [saleIsOperating, setSaleIsOperating] = useState<boolean>(true)
+    const [buyIsOperating, setBuyIsOperating] = useState<boolean>(false)
+
     return (
         <div style={{...flexColumnStyle, gap:'5px', display:'flex', userSelect:'none', width:style === undefined ? '100%' : style.width  , flexDirection:'column', justifyItems:'center'}}>
             {/* 出售 */}
@@ -146,9 +150,14 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
                 type={'sale'} 
                 defaultToken={saleToken}
                 defaultAmount={saleAmount}
+                isOperating={saleIsOperating}
                 onTokenChanged={onSaleTokenChanged}
                 onAmountChanged={onSaleAmountChanged}
                 onError={(msg)=>{setErrorMsg(msg)}}
+                onClick={()=>{
+                    setSaleIsOperating(true)
+                    setBuyIsOperating(false)
+                }}
             />
             {/* 切换按钮 */}
             <div 
@@ -183,8 +192,13 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
                 type={'buy'} 
                 defaultToken={buyToken}
                 defaultAmount={buyAmount}
+                isOperating={buyIsOperating}
                 onTokenChanged={onBuyTokenChanged}
                 onAmountChanged={onBuyAmountChanged}
+                onClick={()=>{
+                    setSaleIsOperating(false)
+                    setBuyIsOperating(true)
+                }}
             />
             {/* 提交按钮 */}
             <div 
@@ -205,7 +219,11 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
             >
                     {
                         swapQuote.isLoading ? 
-                        '报价中···' : 
+                        <div style={{display:'flex', flexDirection:'row', gap:'10px', alignItems:'center', color:'gray'}}>
+                            <Spin size="small"/>
+                            正在确定最终报价
+                        </div>
+                         : 
                         errorMsg === '' ? 
                         '提交':
                         errorMsg

@@ -9,17 +9,10 @@ import { useEffect, useState } from "react"
 // }
 
 export interface TokenPriceChartProps{
-    tokenInfo:TokenInfo | undefined,
+    tokenInfo:TokenInfo,
 }
 
 export const TokenPriceChart = (props: TokenPriceChartProps) => {
-    // 测试数据
-    // let paxg: number[] = [
-    //     4776.17,4780.04,4780.25,4783.43,4783.43,4783.43,4783.43,4783.43,4783.43,4791.52,4790.07,4789.06,4789.11,4789.11,4789.11,4786.28,
-    //     4786.92,4786.47,4786.49,4786.49,4785.06,4785.06,4781.89,4781.89,4774.18,4771.95,4772.08,4772.08,4772.08,4772.08,4772.08,4772.08,
-    //     4772.08,4772.08,4772.08,4772.08,4772.08,4772.08,4772.08,4801.55,4801.55,4805.22,4805.22,4809.91,4809.91,4809.91,4809.91,4809.91,
-    //     4809.91,4809.91,4809.91,4805.13,4805.12,4809.92,4810.04,4810.04,4810.04,4810.04,4810.04,4810.04
-    // ]
     const {
         tokenInfo,
     } = {...props}
@@ -37,11 +30,7 @@ export const TokenPriceChart = (props: TokenPriceChartProps) => {
         setToTime(now)
         setFromTime(now - 86400)
     },[tokenInfo])
-    // 使用CoinCecko API
-    // const {
-    //     data:tokenHistoricalPrices, 
-    //     loading:fetchingTokenHistoricalPrices,
-    // } = useCoinGeckoHistoricalPrice(tokenInfo, fromTime, toTime)
+
     // 使用Uniswap子图获取历史币价
     const {
         data:tokenHistoricalPrices, 

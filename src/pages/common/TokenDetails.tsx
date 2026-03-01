@@ -20,7 +20,7 @@ import { useChainLinkETHPrice } from "@Mu/hooks/chainlink/useChainLinkETHPrices"
 
 export const TokenDetails = () => {
     // hooks
-    const naviaget = useNavigate()
+    const navigate = useNavigate()
     // 解析出当前的页面的路由数据
     const {tokenId} = useParams()
 
@@ -41,12 +41,12 @@ export const TokenDetails = () => {
     
 
     // 获取当前的Token信息
-    const [token,setToken] = useState<TokenInfo>(NATIVE_TOKEN)
+    const [currToken,setCurrToken] = useState<TokenInfo>(NATIVE_TOKEN)
     useEffect(()=>{
         if(tokens !== undefined && tokens.length > 0){
-            let findToken = tokens.find(token => token.id === tokenAddress)
-            if(findToken !== undefined){
-                setToken(findToken)
+            let foundToken = tokens.find(item => item.id === tokenAddress)
+            if(foundToken !== undefined){
+                setCurrToken(foundToken)
             }
         }
     }, [tokens, tokenAddress])
@@ -56,7 +56,7 @@ export const TokenDetails = () => {
         data:swaps, 
         loading: fetchingSwaps,
         refetch: refetchSwaps,
-    } = useSwapRecord(token?.id??"", 1, 20)
+    } = useSwapRecord(currToken.id??"", 1, 20)
 
     
     // 查询代币相关的资金池信息
@@ -64,13 +64,13 @@ export const TokenDetails = () => {
         pools, 
         loading:fetchingPools,
         refetch: refetchPools,
-    } = useTokenPools(token?.id!)
+    } = useTokenPools(currToken.id!)
 
     // 查询代币状态(TVL、交易量以及总发行量等信息)
-    const { tokenStatus, loading: _, refetch: refetchTokenStatus } = useTokenStatus(token?.id!)
+    const { tokenStatus, loading: _, refetch: refetchTokenStatus } = useTokenStatus(currToken.id!)
     useEffect(()=>{
         refetchTokenStatus()
-    }, [token])
+    }, [currToken])
 
     // 查询ETH价格以计算FDV
     const { price: ethPrice} = useChainLinkETHPrice()
@@ -92,9 +92,9 @@ export const TokenDetails = () => {
                 <div 
                     style={{display:'flex', flexDirection:'row', gap:'10px', color:'white'}}
                 >
-                    {token !== undefined? token.symbol : ''} 
+                    {currToken.symbol} 
                     <TokenAddressShow 
-                        tokenAddress={token !== undefined? token.id : ''} 
+                        tokenAddress={currToken.id} 
                         copyness={true}
                         style={{
                             color:'darkgray',
@@ -146,7 +146,7 @@ export const TokenDetails = () => {
             render:(record, _) =>{
                 let type: 'buy' | 'sale' | undefined = undefined 
                 // 和当前的代币对比
-                if(record.token0.id.toLowerCase() === token?.id.toLowerCase()){
+                if(record.token0.id.toLowerCase() === currToken.id.toLowerCase()){
                     // Token0
                     if(record.amount0 > 0){
                         type = 'sale'
@@ -174,13 +174,13 @@ export const TokenDetails = () => {
             }
         },
         {
-            title:`$${token !== undefined? token.symbol: ''}`,
+            title:`$${currToken.symbol}`,
             justifyContent:'center',
             render:(record, _) =>{
                 // 和当前的代币对比
                 let count: number = 0 
                 // 和当前的代币对比
-                if(record.token0.id.toLowerCase() === token?.id.toLowerCase()){
+                if(record.token0.id.toLowerCase() === currToken.id.toLowerCase()){
                     // Token0
                     count = Math.abs(record.amount0)
                 }else{
@@ -212,7 +212,7 @@ export const TokenDetails = () => {
                 let symbol: string = ''
                 let id:string = ''
                 // 和当前的代币对比
-                if(record.token0.id.toLowerCase() === token?.id.toLowerCase()){
+                if(record.token0.id.toLowerCase() === currToken.id.toLowerCase()){
                     // Token0
                     count = Math.abs(record.amount1)
                     symbol = record.token1.symbol
@@ -258,7 +258,7 @@ export const TokenDetails = () => {
                     <div 
                         style={{paddingTop:'10px', paddingBottom:'10px'}} 
                         onClick={(event)=>{
-                            naviaget(`/Portfolio/Overview/${record.origin}`)
+                            navigate(`/Portfolio/Overview/${record.origin}`)
                             event.stopPropagation()
                         }}
                     >
@@ -421,13 +421,13 @@ export const TokenDetails = () => {
         <div style={{overflow:'auto'}}>
             {/* 导航面包屑 */}
             <Affix offsetTop={40}>
-                <div className="TokenDetailsBreadCrumb"  style={{background:'#101010',marginTop:'40px', display:'flex', flexDirection:'column', gap:'20px'}}>
+                <div className="TokenDetailsBreadCrumb"  style={{background:'#000000',marginTop:'40px', display:'flex', flexDirection:'column', gap:'20px'}}>
                     <MuBreadcrumb items={BreadcrumbItems} separator={<RightOutlined style={{fontSize:'10px'}}/>}/>
                     {/* 代币标题 */}
                     <div style={{display:'flex', flexDirection:'row', gap:'10px', alignItems:'center', borderBottom:'1px solid #454545', paddingBottom:'20px'}}>
-                        <Avatar style={{background:'#d1d1d1'}} src={token !== undefined? token.logoURI : ''}/>
-                        <div style={{color:'whitesmoke', fontSize:'20px'}}>{token !== undefined? token.name : ''}</div>
-                        <div style={{color:'darkgray', fontSize:'20px'}}>{token !== undefined? token.symbol : ''}</div>
+                        <Avatar style={{background:'#d1d1d1'}} src={currToken.logoURI}/>
+                        <div style={{color:'whitesmoke', fontSize:'20px'}}>{currToken.name}</div>
+                        <div style={{color:'darkgray', fontSize:'20px'}}>{currToken.symbol}</div>
                     </div>
                 </div>
             </Affix>
@@ -437,7 +437,7 @@ export const TokenDetails = () => {
                 <div className="TokenDetailsBody-Left" style={{width:'65%', background:'', display:'flex', flexDirection:'column', gap:'20px'}}>
                     
                     {/* 代币价格趋势图 */}
-                    <TokenPriceChart tokenInfo={token}/>
+                    <TokenPriceChart tokenInfo={currToken}/>
                     {/* 统计数据 */}
                     <div>
                         <div style={{fontSize:'30px'}}>统计数据</div>
@@ -496,7 +496,7 @@ export const TokenDetails = () => {
                                 MainMenuItemSelected:{fontSize:'16px', cursor:'pointer', color:'#f3f3f3', background:'#2b2b2b', borderRadius:'20px', paddingLeft:'10px', paddingRight:'10px', paddingTop:'2px', paddingBottom:'2px'}
                             }}
                         />
-                        <ExchangeModule defaultBuyToken={token} currentToken={token} defaultSaleToken={findToken('ETH', tokens)!}/>
+                        <ExchangeModule defaultBuyToken={currToken} currentToken={currToken} defaultSaleToken={findToken('ETH', tokens)!}/>
                     </div>
                 </div>
             </div>

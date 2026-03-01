@@ -70,7 +70,7 @@ export const TokenSelector = (props: TokenSelectorProps) => {
     useEffect(()=>{
         if(tokens.length > 0){
             setTokensShow(tokens)
-            let token = tokens.find(token => token.symbol === 'USDC')
+            let token = tokens.find(token => token.symbol === '')
             if(token !== undefined){
                 setSelectedToken(token)
             }else{

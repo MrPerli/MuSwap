@@ -4,7 +4,7 @@ import type { TokenInfoExpend, TokenInfo } from "@Mu/types/TokenTypes";
 import type { GetTokenPricePerHourResp, GetTokenPricePerHourVariables } from "@Mu/types/Uniswap";
 import { useEffect, useState } from "react";
 
-export const useTokenHistoricalPrice = (token: TokenInfo | undefined, startUnix: number) => {
+export const useTokenHistoricalPrice = (_token: TokenInfo, startUnix: number) => {
     const [data, setData] = useState<TokenInfoExpend[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<Error | null>(null)
@@ -16,37 +16,40 @@ export const useTokenHistoricalPrice = (token: TokenInfo | undefined, startUnix:
     } = useTheGraphQuery<GetTokenPricePerHourResp, GetTokenPricePerHourVariables>(
         GET_TOKEN_PRICE_PER_HOUR,
         {
-            token: token?.id.toLowerCase() as `0x${string}`,
+            token: _token.id.toLowerCase() as `0x${string}`,
             startUnix: startUnix
         },
         {
-            enabled: token != undefined
+            enabled: _token != undefined
         }
     )
 
     useEffect(()=>{
-        if(token !== undefined){
+        if(_token !== undefined){
             setLoading(true)
             reFetchTokenPrice()
         }
-    }, [token])
+    }, [_token])
 
     useEffect(()=>{
-        if(tokenPricePerHour === null || tokenPricePerHour.tokenHourDatas.length === 0 || token === undefined){
+        if(tokenPricePerHour === null || tokenPricePerHour.tokenHourDatas.length === 0 ){
+            setLoading(false)
             return
         }
         // 解析数据
         let tokens:TokenInfoExpend[] = []
         tokenPricePerHour.tokenHourDatas.forEach(item=>{
-            tokens.push({
-                ...token, 
-                price: parseFloat(item.priceUSD), 
-                priceUpdateTime: item.periodStartUnix,
-                open:parseFloat(item.open),
-                close:parseFloat(item.close),
-                low:parseFloat(item.low),
-                high:parseFloat(item.high),
-            })
+            if(item.id.toLowerCase().includes(_token.id.toLowerCase())){
+                tokens.push({
+                    ..._token, 
+                    price: parseFloat(item.priceUSD), 
+                    priceUpdateTime: item.periodStartUnix,
+                    open:parseFloat(item.open),
+                    close:parseFloat(item.close),
+                    low:parseFloat(item.low),
+                    high:parseFloat(item.high),
+                })
+            }
         })
 
         // 缓存数据

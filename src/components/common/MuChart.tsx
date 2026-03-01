@@ -670,12 +670,17 @@ const Chart = <T,>(props: ChartProps<T>): React.ReactNode => {
         setTargetPoint(lineItems[lineItems.length - 1]);
         onIndicatorShow?.(false);
     };
-    const findClosest = (arr: MuLineChartItemType<T>[], target: MuChartPointType): MuLineChartItemType<T> => {
+    const findClosest = (arr: MuLineChartItemType<T>[], target: MuChartPointType): MuLineChartItemType<T> | null => {
+        if(arr.length === 0){
+            return null
+        }
         return arr.reduce((prev, curr) => (Math.abs(curr.point.x - target.x) < Math.abs(prev.point.x - target.x) ? curr : prev));
     };
     const onMouseMove = (event: React.MouseEvent<SVGSVGElement>) => {
         let target = findClosest(lineItems, { x: event.nativeEvent.offsetX, y: event.nativeEvent.offsetY });
-        setTargetPoint(target);
+        if(target !== null){
+            setTargetPoint(target);
+        }
     };
 
     return (
@@ -689,12 +694,12 @@ const Chart = <T,>(props: ChartProps<T>): React.ReactNode => {
             <Grid width={width} height={height} />
             <path d={line} fill="none" stroke="#c91cb2" strokeWidth="2" />
             <path d={area} fill="url(#area)" stroke="#00000000" strokeWidth="0" />
-            {!showIndicator && <circle cx={targetItem.point.x} cy={targetItem?.point.y} r="4" stroke="#f2f2f2" strokeWidth="1.2" fill="#e30960" />}
+            {!showIndicator && <circle cx={targetItem?.point.x} cy={targetItem?.point.y} r="4" stroke="#f2f2f2" strokeWidth="1.2" fill="#e30960" />}
             {showIndicator && targetItem && (
                 <Indicator
                     width={width}
                     height={height}
-                    targetPoint={targetItem.point}
+                    targetPoint={targetItem?.point}
                     minPoint={minItem.point}
                     minData={minItem.srcData ? getY(minItem.srcData) : undefined}
                     maxPoint={maxItem.point}
@@ -703,8 +708,8 @@ const Chart = <T,>(props: ChartProps<T>): React.ReactNode => {
                 />
             )}
             <Tip
-                valueText={targetItem.srcData ? `US$${formatCurrency(getY(targetItem.srcData))}` : 'US$0'}
-                timeText={targetItem.srcData ? formatDate(getX(targetItem.srcData)) : ''}
+                valueText={targetItem?.srcData ? `US$${formatCurrency(getY(targetItem?.srcData))}` : 'US$0'}
+                timeText={targetItem?.srcData ? formatDate(getX(targetItem?.srcData)) : ''}
             />
         </svg>
     );

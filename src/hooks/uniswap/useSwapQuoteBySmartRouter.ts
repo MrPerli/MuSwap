@@ -7,6 +7,7 @@ import { ETH_MAIN_RPC_URL } from '@Mu/config/Wagmi'
 import { AlphaRouter, SwapType, type SwapOptionsSwapRouter02, type SwapRoute } from '@uniswap/smart-order-router'
 import { useAccount } from 'wagmi'
 import JSBI from 'jsbi'
+import { message } from 'antd'
 
 interface SwapQuoteResult {
     quote: string | null;                 // 格式化后的预估输出数量
@@ -136,6 +137,7 @@ export function useSwapQuoteBySmartRouter(
                 )
 
                 if (!routeResult) {
+                    message.info('未找到可用的报价路由')
                     throw new Error(`router.route error: no swap router`);
                 }
 
@@ -152,6 +154,7 @@ export function useSwapQuoteBySmartRouter(
                     setRoute(routeResult);
                 }
             } catch (err) {
+                message.error(String(err))
                 console.error(String(err))
                 if (isMounted) {
                     setError(err instanceof Error ? err : new Error(String(err)));
