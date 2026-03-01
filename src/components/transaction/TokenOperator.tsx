@@ -13,22 +13,25 @@ export interface TokenOperatorProps{
     type?:'sale'|'buy' // 出售还是购买,不同的类型在UI上会有一些差异,比如出售时会有数额快速填充工具栏,购买时则没有
     defaultToken: TokenInfo // 默认选中的代币,必传
     defaultAmount?: number // 默认数额,选传
+    isOperating?:boolean
     onTokenChanged?:(token:TokenInfo) => void
     onAmountChanged?:(amount:number) => void
     onError?:(errMsg:string) => void
+    onClick?:()=>void
 }
 
-export  const TokenOperator = (props: TokenOperatorProps) => {
+export  const TokenOperator:React.FC<TokenOperatorProps> = (props) => {
     // props
     const {
         type='sale',
         defaultToken,
+        isOperating = false,
         onTokenChanged,
         onAmountChanged,
         onError,
+        onClick,
     } = {...props}
     
-
     // 内部Token状态,用于控制当前选中的代币,内部均使用这个状态
     const [innerToken, setInnerToken] = useState<TokenInfo | undefined>(defaultToken)
     useEffect(()=>{
@@ -162,7 +165,23 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
     }
 
     return (
-        <div style={{display:'flex', flexDirection:'column', border:commBorder, borderRadius:'16px', background:'#131313', padding:'10px', paddingBottom:'18px', gap:'10px'}}>
+        <div 
+            onClick={()=>{
+                if(onClick !== undefined){
+                    onClick()
+                }
+            }}
+            style={{
+                display:'flex', 
+                flexDirection:'column', 
+                border:isOperating ? '1px solid #656565' : commBorder, 
+                borderRadius:'16px', 
+                background: isOperating ? '#101010' : '#1f1f1f', 
+                padding:'10px', 
+                paddingBottom:'18px', 
+                gap:'10px'
+            }}
+        >
             <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
                 {type === 'sale'? <span style={{color:'#a0a0a0'}}>出售</span> : <span style={{color:'#a0a0a0'}}>购买</span>}
                 {
@@ -177,25 +196,25 @@ export  const TokenOperator = (props: TokenOperatorProps) => {
                             <>
                                 <div 
                                     onClick={()=>{fastFillAmount(0.25)}}
-                                    style={{borderRadius:3, background:'#2b2b2b', paddingLeft:5, paddingRight:5, cursor:'pointer', color:'#4e4e4e', fontWeight:600}}
+                                    style={{borderRadius:5, background:'#000', paddingLeft:8, paddingRight:8, cursor:'pointer', color:'#d5d5d5', fontWeight:600}}
                                 >
                                     25%
                                 </div>
                                 <div 
                                     onClick={()=>{fastFillAmount(0.50)}}
-                                    style={{borderRadius:3, background:'#2b2b2b', paddingLeft:5, paddingRight:5, cursor:'pointer', color:'#4e4e4e', fontWeight:600}}
+                                    style={{borderRadius:5, background:'#000', paddingLeft:8, paddingRight:8, cursor:'pointer', color:'#d5d5d5', fontWeight:600}}
                                 >
                                     50%
                                 </div>
                                 <div 
                                     onClick={()=>{fastFillAmount(0.75)}}
-                                    style={{borderRadius:3, background:'#2b2b2b', paddingLeft:5, paddingRight:5, cursor:'pointer', color:'#4e4e4e', fontWeight:600}}
+                                    style={{borderRadius:5, background:'#000', paddingLeft:8, paddingRight:8, cursor:'pointer', color:'#d5d5d5', fontWeight:600}}
                                 >
                                     75%
                                 </div>
                                 <div 
                                     onClick={()=>{fastFillAmount(1)}}
-                                    style={{borderRadius:3, background:'#2b2b2b', paddingLeft:5, paddingRight:5, cursor:'pointer', color:'#4e4e4e', fontWeight:600}}
+                                    style={{borderRadius:5, background:'#000', paddingLeft:8, paddingRight:8, cursor:'pointer', color:'#d5d5d5', fontWeight:600}}
                                 >
                                     全部
                                 </div>
