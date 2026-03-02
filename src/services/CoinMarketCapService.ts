@@ -1,28 +1,9 @@
 import axios from 'axios'
 import type { CmcQuoteHistoricalResp, CmcQuoteLatestResp, CmcTokenIdMapResp, CmcTokenIdMapRespData } from '@MuTypes/CoinMarketCap'
 
-// const cmcClient = axios.create({
-//     baseURL:'https://pro-api.coinmarketcap.com/',
-//     //baseURL:'https://sandbox-api.coinmarketcap.com/',
-//     timeout:10000,//10s
-//     headers:{
-//         'Accept':'application/json',
-//         'Content-Type':'application/json',
-//         'X-CMC_PRO_API_KEY':'4ba3baf2adb643fda1c2cfa9ec97f0c6',
-//         'Access-Control-Allow-Headers':'*',
-//     },
-// })
-
 const cmcClient = axios.create({
-    baseURL:'http://localhost:8080/',
-    //baseURL:'https://sandbox-api.coinmarketcap.com/',
+    baseURL:'https://muswapbe.vercel.app',
     timeout:10000,//10s
-    // headers:{
-    //     'Accept':'application/json',
-    //     'Content-Type':'application/json',
-    //     'X-CMC_PRO_API_KEY':'4ba3baf2adb643fda1c2cfa9ec97f0c6',
-    //     'Access-Control-Allow-Headers':'*',
-    // },
 })
 
 // 返回查询的cmcId和tokenAddress的对应关系
