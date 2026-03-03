@@ -1,4 +1,4 @@
-import type { EtherScanBlockNumberResp, EtherScanTokenTxResp, EtherScanTransfer } from '@Mu/types/EtherScan'
+import type { EtherScanBlockNumberResp, EtherScanTokenTxResp, EtherScanTotalSupplyResp, EtherScanTransfer } from '@Mu/types/EtherScan'
 import axios from 'axios'
 
 const cmcClient = axios.create({
@@ -10,6 +10,24 @@ const cmcClient = axios.create({
 const ETHER_SCAN_APIKEY= 'ZPKHEP6IBTZZKZ49MUER68UH2NFNQQVPF5'
 
 export const EtherScanAPI = {
+    async getTokenTotalSupply(tokenAddress:string, chainid: number):Promise<bigint>{
+        const response = await cmcClient.get('/v2/api',{
+            params:{
+                apikey: ETHER_SCAN_APIKEY,
+                chainid: chainid,
+                module: 'stats',
+                action: 'tokensupply',
+                contractaddress: tokenAddress,
+            }
+        })
+        let resp: EtherScanTotalSupplyResp = response.data as EtherScanTotalSupplyResp
+        if(resp.status === '1'){
+            return BigInt(resp.result)
+        }else{
+            return 0n
+        }
+    },
+
     // 根据时间获取对应的区块号
     async getBlockNumberByTimestamp(timestamp: number, chainid: number):Promise<number>{
         const response = await cmcClient.get('/v2/api',{
