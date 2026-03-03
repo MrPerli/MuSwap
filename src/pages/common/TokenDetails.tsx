@@ -85,7 +85,7 @@ export const TokenDetails = () => {
     const BreadcrumbItems: MuBreadcrumbItemType[] = [
         {
             title: <span>代币</span>,
-            href: '/Explor#Tokens',
+            href: '/Explor/Tokens',
         },
         {
             title: 
@@ -442,7 +442,16 @@ export const TokenDetails = () => {
                     <div>
                         <div style={{fontSize:'30px'}}>统计数据</div>
                         <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', gap:'20px'}}>
-                            <MuStatistic title={'TVL'} value={`US$${formatCurrency(tokenStatus?.totalValueLockedUSD ? parseFloat(tokenStatus?.totalValueLockedUSD) : 0)}`}/>
+                            <MuStatistic 
+                                title={'TVL'} 
+                                value={
+                                    `US$${formatCurrency(
+                                        tokenStatus?.totalValueLockedUSD ? 
+                                        parseFloat(tokenStatus?.totalValueLockedUSD) > 0 ? parseFloat(tokenStatus?.totalValueLockedUSD) : 0
+                                        : 
+                                        0
+                                    )}`
+                                }/>
                             {/* <MuStatistic title={'市值'} value={`US$${1866.4}亿`}/> */}
                             <MuStatistic title={'FDV'} value={`US$${formatCurrency(fdv)}`}/>
                             <MuStatistic title={'交易量'} value={`US$${formatCurrency(tokenStatus?.volumeUSD ? parseFloat(tokenStatus?.volumeUSD) : 0)}`}/>
