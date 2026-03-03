@@ -42,7 +42,11 @@ export const useSwapRecord = (address: string, pageIndex:number = 1, pageSize:nu
     },[address])
 
     useEffect(()=>{
-        if(swapData === null || address === ''){
+        if(swapData === null || 
+            swapData === undefined || 
+            swapData.swaps === undefined || 
+            swapData.swaps.length === 0 || 
+            address === ''){
             setLoading(false)
             return
         }
