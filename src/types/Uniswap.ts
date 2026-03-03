@@ -4,6 +4,17 @@ export interface Token {
   symbol: string
   name: string
   decimals: number
+  derivedETH: number
+}
+
+export interface PoolHourData{
+    periodStartUnix: number
+    volumeUSD: number
+}
+
+export interface PoolDayData{
+    date: number
+    volumeUSD: number
 }
 
 // Pool --Uniswap TheGraph V3
@@ -17,13 +28,16 @@ export interface Pool {
     feeTier: number // 手续费等级
     token0Price: string
     token1Price:string
-    volumeUSD: string
+    volumeUSD: string // 总交易量
     feesUSD: string
     totalValueLockedUSD: string
     totalValueLockedToken0: string
     totalValueLockedToken1: string
     txCount: string
     createdAtTimestamp: string // 池创建时间
+
+    poolHourData: PoolHourData[]
+    poolDayData: PoolDayData[]
 }
 
 // TokenPrice  --Uniswap TheGraph V3
@@ -147,34 +161,44 @@ export interface GetSwapRecordResp{
 
 // 查询与某个代币相关的流动性池的请求变量类型
 export type GetTokenRelatedPoolsVariables = {
-  tokenAddress: string;
-};
+    tokenAddress: string
+}
 
 // 查询与某个代币相关的流动性池的响应类型
 export interface GetTokenRelatedPoolsResponse {
-  pools: Pool[];
+    pools: Pool[]
 }
 
 // 查询代币信息的请求变量类型
 export interface GetTokenStatusVariables {
-  tokenAddress: string;
+    tokenAddress: string
 }
 
 // 获取代币信息,包括其对ETH的实时价格
 export interface TokenStatus {
-  id: string;
-  symbol: string;
-  name: string;
-  decimals: number;
-  totalSupply: string;
-  derivedETH: string;
-  volumeUSD: string;
-  totalValueLockedUSD: string;
+    id: string
+    symbol: string
+    name: string
+    decimals: number
+    totalSupply: string
+    derivedETH: string
+    volumeUSD: string
+    totalValueLockedUSD: string
 }
 
 // 查询代币信息的响应类型
 export interface GetTokenStatusResponse {
-  token: TokenStatus;
+    token: TokenStatus
+}
+
+// 查询所有流动性池返回数据结构
+export interface GetPoolsResponse {
+    pools: Pool[]
+}
+
+export interface GetPoolsVariables {
+    first: number,
+    skip: number,
 }
 
 //------- 以下是调用uniswap API的相关类型定义

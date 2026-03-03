@@ -1,7 +1,7 @@
 import { ApolloClient, HttpLink, InMemoryCache, type DocumentNode, type OperationVariables } from "@apollo/client"
 
 const GRAPH_ENDPOINTS: Record<number,string> = {
-    1: 'https://gateway.thegraph.com/api/subgraphs/id/DiYPVdygkfjDWhbxGSqAQxwBKmfKnkWQojqeM2rkLb3G',// 以太坊主网
+    1: 'https://gateway.thegraph.com/api/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV',// 以太坊主网
     11155111: 'https://gateway.thegraph.com/api/subgraphs/id/2vXTcbEvA3TGTufatwRVUXQjJZDKCHmzZmZKYYXxaeeR', // sepolia测试网
     137: '',
 }

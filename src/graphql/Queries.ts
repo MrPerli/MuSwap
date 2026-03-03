@@ -283,3 +283,42 @@ export const GET_TOKEN_STATUS = gql`
     }
   }
 `;
+
+export const GET_POOLS = gql`
+    query GetPools($first: Int!, $skip: Int!) {
+    pools(
+      first: $first
+      skip: $skip
+      orderDirection: desc
+      orderBy: totalValueLockedUSD
+      where: {volumeUSD_gt: "0"}
+    ) {
+      feeTier
+      id
+      token1 {
+        decimals
+        derivedETH
+        id
+        name
+        symbol
+      }
+      token0 {
+        decimals
+        derivedETH
+        id
+        name
+        symbol
+      }
+      volumeUSD
+      totalValueLockedUSD
+      poolHourData(first: 24, orderBy: periodStartUnix, orderDirection: desc) {
+        periodStartUnix
+        volumeUSD
+      }
+      poolDayData(first: 30, orderBy: date, orderDirection: desc) {
+        date
+        volumeUSD
+      }
+    }
+  }
+`;
