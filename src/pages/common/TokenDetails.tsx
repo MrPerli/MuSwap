@@ -17,6 +17,7 @@ import { ExchangeModule } from "@Mu/components/transaction/ExchangeModule"
 import { useTokenPools } from "@Mu/hooks/uniswap/useTokenPools"
 import { useTokenStatus } from "@Mu/hooks/uniswap/useTokenStatus"
 import { useChainLinkETHPrice } from "@Mu/hooks/chainlink/useChainLinkETHPrices"
+import { useTokenTotalSupply } from "@Mu/hooks/etherscan/useTokenTotalSupply"
 
 export const TokenDetails = () => {
     // hooks
@@ -72,14 +73,16 @@ export const TokenDetails = () => {
         refetchTokenStatus()
     }, [currToken])
 
+    const {data:tokenTotalSupply} = useTokenTotalSupply(currToken.id!, currToken.chainId!)
+
     // 查询ETH价格以计算FDV
     const { price: ethPrice} = useChainLinkETHPrice()
     const [fdv, setFDV] = useState<number>(0)
     useEffect(()=>{
         if(ethPrice !== null && tokenStatus !== undefined){
-            setFDV(ethPrice * parseFloat(tokenStatus?.derivedETH!) * (tokenStatus?.totalSupply ? parseFloat(tokenStatus?.totalSupply) : 0) / (10**tokenStatus?.decimals!))
+            setFDV(ethPrice * parseFloat(tokenStatus?.derivedETH!) * Number(tokenTotalSupply / BigInt(10**tokenStatus?.decimals!)))
         }
-    }, [ethPrice, tokenStatus])
+    }, [ethPrice, tokenStatus, tokenTotalSupply])
 
     // 初始化当前页面的面包屑数据
     const BreadcrumbItems: MuBreadcrumbItemType[] = [
