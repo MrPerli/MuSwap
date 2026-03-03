@@ -114,12 +114,31 @@ export const FundPool = () => {
         //     justifyContent:'right',
         // },
         {
-            title: '交易量',
+            title: '1天交易量',
             justifyContent:'right',
             render:(record, _) =>{  
+                let totalVolume: number = 0
+                for(let i = 0; i < record.poolHourData.length - 2; i++){
+                    totalVolume += parseFloat(record.poolHourData[i].volumeUSD.toString())
+                }
                 return (
                     <div style={{paddingTop:'10px', paddingBottom:'10px', fontWeight:600, alignItems:'center', display:'flex', flexDirection:'row', gap:'4px'}}>
-                        US${formatCurrency(parseFloat(record.volumeUSD))}
+                        US${formatCurrency(totalVolume)}
+                    </div>
+                )
+            }
+        },
+        {
+            title: '30天交易量',
+            justifyContent:'right',
+            render:(record, _) =>{  
+                let totalVolume: number = 0
+                for(let i = 0; i < record.poolDayData.length - 2; i++){
+                    totalVolume += parseFloat(record.poolDayData[i].volumeUSD.toString())
+                }
+                return (
+                    <div style={{paddingTop:'10px', paddingBottom:'10px', fontWeight:600, alignItems:'center', display:'flex', flexDirection:'row', gap:'4px'}}>
+                        US${formatCurrency(totalVolume)}
                     </div>
                 )
             }
