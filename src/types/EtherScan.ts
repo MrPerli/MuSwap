@@ -30,6 +30,12 @@ export interface EtherScanBlockNumberResp{
     result: number,
 }
 
+export interface EtherScanTotalSupplyResp{
+    status: string,
+    message: string,
+    result: string,
+}
+
 export interface EtherScanTokenTxResp{
     status: string,
     message: string,
