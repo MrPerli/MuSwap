@@ -137,7 +137,7 @@ export function useSwapQuoteBySmartRouter(
                 )
 
                 if (!routeResult) {
-                    message.info('未找到可用的报价路由')
+                    //message.info('未找到可用的报价路由')
                     throw new Error(`router.route error: no swap router`);
                 }
 
@@ -158,6 +158,9 @@ export function useSwapQuoteBySmartRouter(
                 console.error(String(err))
                 if (isMounted) {
                     setError(err instanceof Error ? err : new Error(String(err)));
+                    setQuote('0')
+                    setQuoteRaw(0n)
+                    setRoute(null)
                 }
             } finally {
                 if (isMounted) {
