@@ -2,9 +2,8 @@ import { ArrowDownOutlined } from "@ant-design/icons"
 import { flexColumnStyle } from "@Mu/components/common/MuStyles"
 import { TokenOperator } from "@Mu/components/transaction/TokenOperator"
 //import { useSwapQuoteByManual } from "@Mu/hooks/uniswap/useSwapQuoteByManual"
-import { useSwapQuoteBySmartRouter } from "@Mu/hooks/uniswap/useSwapQuoteBySmartRouter"
+import { useSwapQuoteByAPI } from "@Mu/hooks/uniswap/useSwapQuoteByAPI"
 import type { TokenInfo } from "@Mu/types/TokenTypes"
-import { TradeType } from "@uniswap/sdk-core"
 import { Spin } from "antd"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -85,40 +84,42 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
     const [saleAmount, setSaleAmount] = useState<number>(0)
     // 买入数额
     const [buyAmount, setBuyAmount] = useState<number>(0)
-    // 待报价的出售代币数量,当出售数额改变时更新这个状态,用来触发报价的更新
-    const [tradeType, setSwapQuoteType] = useState<TradeType | undefined>(undefined)
-    // 待报价的购买代币数量,d当购买数额改变时更新这个状态,用来触发报价的更新
-    const [quoteAmount, setQuoteAmount] = useState<number>(0)
+    // 报价方向：出售变化为 INPUT，购买变化为 OUTPUT
+    const [swapQuoteType, setSwapQuoteType] = useState<'INPUT' | 'OUTPUT'>('INPUT')
     // 错误信息
     const [errorMsg, setErrorMsg] = useState<string>('')
 
     // 处理预交易,包括报价
-    const swapQuote = useSwapQuoteBySmartRouter(
+    const swapQuote = useSwapQuoteByAPI(
         saleToken,
         buyToken,
-        quoteAmount,
-        tradeType,
-        //3000,
+        swapQuoteType === 'INPUT' ? saleAmount : buyAmount,
+        swapQuoteType,
+        (swapQuoteType === 'INPUT' ? saleAmount : buyAmount) > 0,
     ) 
     useEffect(()=>{
         if(swapQuote.quote === null){
             return
         }
         const quoteNum = Number(swapQuote.quote)
-        tradeType === TradeType.EXACT_INPUT ? setBuyAmount(quoteNum) : setSaleAmount(quoteNum)
-    }, [swapQuote.quote])
+        if (swapQuoteType === 'INPUT') {
+            // 出售数量为输入，得到买入数量
+            setBuyAmount(quoteNum)
+        } else {
+            // 购买数量为输入，得到需要出售的数量
+            setSaleAmount(quoteNum)
+        }
+    }, [swapQuote.quote, swapQuoteType])
 
     // 出售数额改变事件回调函数
     const onSaleAmountChanged = async (amount: number) => {
         setSaleAmount(amount)
-        setQuoteAmount(amount)
-        setSwapQuoteType(TradeType.EXACT_INPUT)
+        setSwapQuoteType('INPUT')
     }
     // 买入数额改变事件回调函数
     const onBuyAmountChanged = (amount: number) => {
         setBuyAmount(amount)
-        setQuoteAmount(amount)
-        setSwapQuoteType(TradeType.EXACT_OUTPUT)
+        setSwapQuoteType('OUTPUT')
     }
 
     // 当切换出售和购买时
@@ -128,7 +129,6 @@ export const ExchangeModule = (props: ExchangeModuleProps) => {
         setBuyToken(temp)
         setBuyAmount(0)
         setSaleAmount(0)
-        setQuoteAmount(0)
     }
 
     const onSubmit = () => {
